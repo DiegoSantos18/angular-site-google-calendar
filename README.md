@@ -5,6 +5,7 @@ Plataforma pessoal moderna e modular de gestão de compromissos e agenda, desenv
 🌐 [Minha Agenda](http://localhost:3000/)
 
 ![Dashboard](.ideas/readme/dashboard.png)
+![Novo Evento](.ideas/readme/novo-evento.png)
 
 Desenvolvido por **Diego Dos Santos**.
 
