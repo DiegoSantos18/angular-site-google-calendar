@@ -1,0 +1,142 @@
+.calendar-pane {
+  background: var(--mat-sys-surface-container, rgba(0, 0, 0, 0.02));
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  height: fit-content;
+
+  mat-calendar {
+    width: 100%;
+  }
+}
+
+.period-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px 10px 8px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  cursor: pointer;
+  user-select: none;
+
+  .period-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--mat-sys-primary);
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .btn-toggle-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-highest);
+      color: var(--mat-sys-primary);
+    }
+
+    mat-icon {
+      font-size: 0.75rem;
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  }
+}
+
+.time-selection-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--mat-sys-outline-variant);
+}
+
+.time-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  label {
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.time-input-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.time-spinner-input {
+  width: 100%;
+  height: 40px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: center;
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface);
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  cursor: text;
+
+  &:focus {
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 0 2px var(--mat-sys-primary-container, rgba(0,0,0,0.1));
+  }
+}
+
+::ng-deep .mat-calendar-body-label {
+  visibility: hidden;
+}
+
+::ng-deep .mat-calendar-body-disabled.occupied-date .mat-calendar-body-cell-content {
+  background-color: var(--mat-sys-error-container, rgba(186, 26, 26, 0.1));
+  color: var(--mat-sys-on-error-container);
+  border: 1px dashed var(--mat-sys-error);
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--mat-sys-error);
+    border-radius: 50%;
+  }
+}

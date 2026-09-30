@@ -1,0 +1,6 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist/meu-site/browser",
+  "framework": "angular",
+  "devCommand": "ng serve --port $PORT"
+}

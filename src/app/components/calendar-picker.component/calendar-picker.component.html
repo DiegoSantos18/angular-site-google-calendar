@@ -1,0 +1,36 @@
+<div class="calendar-pane">
+  <div class="period-header" (click)="toggleTimeSelection()">
+    <div class="period-title-wrapper">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-clock" />
+      <span>Período</span>
+    </div>
+    <button mat-button class="btn-toggle-time" type="button">
+      <span class="toggle-text">{{ showTimeSelection() ? 'Ocultar Horas' : 'Definir Horas' }}</span>
+      <mat-icon>{{ showTimeSelection() ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+  </div>
+
+  <mat-calendar
+    [selected]="selectedRange"
+    (selectedChange)="onSelectedChange($event)"
+    [dateClass]="dateClass"
+    [dateFilter]="dateFilter">
+  </mat-calendar>
+
+  @if (showTimeSelection()) {
+    <div class="time-selection-container">
+      <div class="time-box">
+        <label>Início (Hora)</label>
+        <div class="time-input-wrapper">
+          <input #startTimeInput type="time" [value]="startTime" (input)="onStartTimeChange($event)" class="time-spinner-input" required>
+        </div>
+      </div>
+      <div class="time-box">
+        <label>Fim (Hora)</label>
+        <div class="time-input-wrapper">
+          <input type="time" [value]="endTime" (input)="onEndTimeChange($event)" class="time-spinner-input" required>
+        </div>
+      </div>
+    </div>
+  }
+</div>

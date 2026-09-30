@@ -1,0 +1,52 @@
+{
+  "name": "meu-site",
+  "version": "0.0.0",
+  "scripts": {
+    "ng": "ng",
+    "start": "ng serve --proxy-config proxy.conf.json",
+    "build": "ng build",
+    "watch": "ng build --watch --configuration development",
+    "test": "ng test",
+    "vercel:dev": "vercel dev",
+    "auth:generate": "tsx scripts/gerar-token.ts",
+    "env:pull:dev": "vercel env pull .env",
+    "env:pull:preview": "vercel env pull --environment=preview .env",
+    "env:pull:prod": "vercel env pull --environment=production .env",
+    "env:push": "vercel env add"
+  },
+  "private": true,
+  "packageManager": "npm@11.19.0",
+  "dependencies": {
+    "@angular/cdk": "^22.2.0",
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/material": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "@angular/router": "^22.2.0",
+    "@fortawesome/fontawesome-free": "^7.3.1",
+    "@vercel/node": "^16.0.2",
+    "dotenv": "^18.0.4",
+    "googleapis": "^182.0.0",
+    "open": "^11.0.4",
+    "rxjs": "~7.8.0",
+    "server-destroy": "^1.0.1",
+    "tslib": "^2.3.0",
+    "zone.js": "^0.16.3"
+  },
+  "devDependencies": {
+    "@angular/build": "^22.2.0",
+    "@angular/cli": "^22.2.0",
+    "@angular/compiler-cli": "^22.2.0",
+    "@types/node": "^26.6.3",
+    "@types/server-destroy": "^1.0.4",
+    "@types/zone.js": "^0.0.27",
+    "jsdom": "^30.0.0",
+    "prettier": "^3.8.1",
+    "tsx": "^4.23.15",
+    "typescript": "~6.0.2",
+    "vercel": "^61.0.0",
+    "vitest": "^5.0.0"
+  }
+}

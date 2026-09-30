@@ -1,0 +1,90 @@
+<div class="calendar-wrapper">
+  <div class="calendar-form-container wide-modal">
+    <button class="btn-close" routerLink="/" title="Voltar">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-arrow-left" />
+    </button>
+
+    <h3><mat-icon class="calendar-icon-title" fontSet="fontawesome" fontIcon="fa-calendar-plus" /> Novo Evento</h3>
+    <p class="subtitle">Selecione o período de início e fim no calendário e ajuste os horários.</p>
+
+    <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+      <div class="calendar-layout-grid">
+
+        <app-calendar-picker
+          [selectedRange]="selectedRange"
+          [existingEvents]="existingEvents()"
+          [startTime]="eventForm.get('startTime')?.value"
+          [endTime]="eventForm.get('endTime')?.value"
+          (rangeChange)="onRangeChange($event)"
+          (startTimeChange)="eventForm.get('startTime')?.setValue($event)"
+          (endTimeChange)="eventForm.get('endTime')?.setValue($event)">
+        </app-calendar-picker>
+
+        <div class="form-pane">
+
+          <div class="busy-slots-section">
+            <h4><mat-icon fontSet="fontawesome" fontIcon="fa-clock" /> Eventos Já Agendados:</h4>
+            @if (loadingEvents()) {
+              <p class="loading-text">A carregar disponibilidade...</p>
+            } @else if (existingEvents().length === 0) {
+              <p class="free-text">Nenhum evento agendado. Livre total!</p>
+            } @else {
+              <ul class="slots-list">
+                @for (ev of existingEvents(); track ev.id) {
+                  <li>
+                    <strong>{{ ev.summary }}</strong>
+                    <span>{{ formatEventDate(ev.start.dateTime || ev.start.date) }}</span>
+                    @if (ev.location){
+                      <span><mat-icon>location_on</mat-icon> {{ ev.location }}</span>
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+
+          <div class="appointment-form">
+
+            <div class="selected-period-display">
+              <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-check" class="prefix-icon" />
+              <span>Período: <strong>{{ formatRangeDisplay() }}</strong></span>
+            </div>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Título / Nome do Evento</mat-label>
+              <input matInput formControlName="summary" placeholder="Ex: Reunião com Cliente" />
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Descrição</mat-label>
+              <textarea matInput formControlName="description" rows="2" placeholder="Detalhes ou pauta da reunião..."></textarea>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="full-width">
+              <mat-label>Localização</mat-label>
+              <input matInput formControlName="location" placeholder="Ex: Sala 1" />
+            </mat-form-field>
+
+            <button mat-flat-button color="primary" class="btn-submit" type="submit" [disabled]="eventForm.invalid || loading() || !selectedRange?.start">
+              @if (loading()) {
+                <span class="loading-content">
+                  <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+                  <span>A processar...</span>
+                </span>
+              } @else {
+                <span>Confirmar Agendamento</span>
+              }
+            </button>
+
+            @if (successMessage()) {
+              <p class="success-msg">{{ successMessage() }}</p>
+            }
+            @if (errorMessage()) {
+              <p class="error-msg">{{ errorMessage() }}</p>
+            }
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,55 @@
+<div class="agenda-container">
+  <div class="agenda-header-actions">
+    <h2>
+      <mat-icon class="agenda-icon-title" fontSet="fontawesome" fontIcon="fa-calendar-days" />
+      Próximos Eventos
+    </h2>
+
+    <button mat-flat-button color="primary" class="btn-open-modal" routerLink="/novo-evento">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-plus" /> Novo Evento
+    </button>
+  </div>
+
+  @if (loading) {
+    <div class="loading">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+      Carregando Agenda...
+    </div>
+  }
+
+  @if (errorMessage) {
+    <div class="error">
+      <mat-icon>error_outline</mat-icon>
+      {{ errorMessage }}
+    </div>
+  }
+
+  @if (!loading && eventos.length > 0) {
+    <ul>
+      @for (ev of eventos; track ev.id) {
+        <li>
+          <div class="data-badge">
+            <mat-icon fontSet="fontawesome" fontIcon="fa-regular fa-clock" />
+            {{ ev.start.dateTime || ev.start.date | date:'dd/MM/yyyy HH:mm' }}
+          </div>
+          <div class="detalhes">
+            <strong>{{ ev.summary }}</strong>
+            @if (ev.description) {
+              <p>{{ ev.description }}</p>
+            }
+            @if (ev.location) {
+              <p><mat-icon>location_on</mat-icon> {{ ev.location }}</p>
+            }
+          </div>
+        </li>
+      }
+    </ul>
+  }
+
+  @if (!loading && eventos.length === 0 && !errorMessage) {
+    <div class="empty-state">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-xmark" />
+      <p>Nenhum evento agendado de momento.</p>
+    </div>
+  }
+</div>

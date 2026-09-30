@@ -1,0 +1,235 @@
+.calendar-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 12px;
+  box-sizing: border-box;
+}
+
+.calendar-form-container {
+  background: var(--mat-sys-surface-container-highest, var(--mat-sys-surface));
+  color: var(--mat-sys-on-surface);
+  padding: 16px 20px;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 900px;
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--mat-sys-outline-variant);
+  box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--mat-sys-outline-variant) transparent;
+
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 8px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--mat-sys-outline-variant);
+    border-radius: 6px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+
+    &:hover {
+      background-color: var(--mat-sys-primary);
+    }
+  }
+
+  h3 {
+    margin: 0 0 2px 0;
+    color: var(--mat-sys-on-surface);
+    font-size: 1.1rem;
+
+    .calendar-icon-title {
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.calendar-layout-grid {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 16px;
+  margin-top: 8px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-pane {
+  display: flex;
+  flex-direction: column;
+}
+
+.btn-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: transparent;
+  border: none;
+  color: var(--mat-sys-on-surface-variant);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: var(
+      --mat-sys-state-hover-state-layer,
+      rgba(0, 0, 0, 0.05)
+    );
+    color: var(--mat-sys-primary);
+  }
+}
+
+.subtitle {
+  font-size: 0.8rem;
+  color: var(--mat-sys-on-surface-variant);
+  margin-bottom: 8px;
+}
+
+.busy-slots-section {
+  background: var(--mat-sys-surface-container, rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  max-height: 80px;
+  overflow-y: auto;
+
+  h4 {
+    font-size: 0.75rem;
+    margin: 0 0 2px 0;
+    color: var(--mat-sys-primary);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+}
+
+.slots-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+
+  li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    padding: 2px 0;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    strong {
+      color: var(--mat-sys-on-surface);
+    }
+
+    span {
+      color: var(--mat-sys-on-surface-variant);
+    }
+  }
+}
+
+.loading-text,
+.free-text {
+  font-size: 0.75rem;
+  color: var(--mat-sys-on-surface-variant);
+  font-style: italic;
+  margin: 0;
+}
+
+.appointment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.selected-period-display {
+  background-color: var(--mat-sys-primary-container, rgba(0, 0, 0, 0.05));
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: var(--mat-sys-on-primary-container, var(--mat-sys-on-surface));
+  margin-bottom: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-left: 4px solid var(--mat-sys-primary);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.btn-submit {
+  font-weight: bold;
+  height: 40px;
+  width: 100%;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+
+  .loading-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .fa-spinner {
+    animation: fa-spin 1s linear infinite;
+  }
+}
+
+@keyframes fa-spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.success-msg {
+  color: var(--mat-sys-primary);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  text-align: center;
+  font-weight: 500;
+}
+
+.error-msg {
+  color: var(--mat-sys-error, #ba1a1a);
+  font-size: 0.8rem;
+  margin-top: 4px;
+  text-align: center;
+  font-weight: 500;
+}
