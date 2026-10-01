@@ -1,5 +1,5 @@
 .agenda-container {
-  max-width: 700px;
+  max-width: 1100px;
   margin: 2rem auto;
   font: var(--mat-sys-body-medium);
   padding: 0 1.5rem;
@@ -8,7 +8,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     flex-wrap: wrap;
     gap: 1rem;
 
@@ -50,60 +50,133 @@
     }
   }
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
+  .events-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
   }
 
-  li {
-    padding: 14px 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-    display: flex;
-    gap: 1.2rem;
-    align-items: flex-start;
-    transition: background-color 0.2s ease;
+  .event-card-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
 
     &:hover {
-      background-color: rgba(0, 0, 0, 0.01);
+      .event-card {
+        transform: translateY(-3px);
+        border-color: var(--mat-sys-primary);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+
+        .card-footer-action {
+          color: var(--mat-sys-primary);
+        }
+      }
     }
   }
 
-  .data-badge {
-    background: var(--mat-sys-surface-container-high, #f0f4f8);
-    color: var(--mat-sys-primary);
-    padding: 8px 12px;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 0.85rem;
-    min-width: 140px;
-    text-align: center;
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
+  .event-card {
+    background-color: var(--mat-sys-surface-container, rgba(255, 255, 255, 0.03));
+    border: 1px solid var(--mat-sys-outline-variant, rgba(255, 255, 255, 0.08));
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    height: 100%;
+    box-sizing: border-box;
+    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+
+    .card-date {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--mat-sys-primary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      flex-grow: 1;
+
+      h3 {
+        font-size: 1.15rem;
+        font-weight: bold;
+        color: var(--mat-sys-on-surface);
+        margin: 0;
+      }
+
+      .card-location {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-size: 0.9rem;
+        color: var(--mat-sys-on-surface-variant, #888);
+        margin: 0;
+
+        mat-icon {
+          font-size: 0.85rem;
+          width: 0.85rem;
+          height: 0.85rem;
+          color: var(--mat-sys-primary);
+        }
+      }
+
+      .card-description {
+        font-size: 0.9rem;
+        color: var(--mat-sys-on-surface-variant, #aaa);
+        margin: 0;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+
+    .card-footer-action {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface-variant, #888);
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 0.4rem;
+      margin-top: 0.5rem;
+      border-top: 1px dashed var(--mat-sys-outline-variant, rgba(255, 255, 255, 0.08));
+      padding-top: 0.75rem;
+      transition: color 0.2s ease;
+
+      mat-icon {
+        font-size: 0.8rem;
+        width: 0.8rem;
+        height: 0.8rem;
+      }
+    }
+  }
+
+  .pagination-controls {
+    display: flex;
     justify-content: center;
-    gap: 0.4rem;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2.5rem;
 
-    mat-icon {
-      font-size: 0.95rem;
-      width: 0.95rem;
-      height: 0.95rem;
-    }
-  }
-
-  .detalhes {
-    strong {
-      display: block;
-      font-size: 1.1rem;
+    button {
+      border-color: var(--mat-sys-outline-variant, rgba(255, 255, 255, 0.2));
       color: var(--mat-sys-on-surface);
-      margin-bottom: 2px;
+
+      &:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
     }
 
-    p {
-      margin: 4px 0 0;
-      color: var(--mat-sys-on-surface-variant, #666);
+    .page-indicator {
       font-size: 0.95rem;
-      line-height: 1.4;
+      font-weight: 500;
+      color: var(--mat-sys-on-surface-variant, #888);
     }
   }
 

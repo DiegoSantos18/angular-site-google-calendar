@@ -1,7 +1,7 @@
-import { Component, EventEmitter, Injectable, Input, Output, signal, ViewChild, ElementRef, AfterViewChecked } from '@angular/core';
+import { Component, EventEmitter, Injectable, Input, Output, signal, ViewChild, ElementRef, AfterViewChecked, ChangeDetectorRef, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatIconModule, MatIcon } from '@angular/material/icon';
-import { MatDatepickerModule, DateRange, MatCalendarCellCssClasses, MatDatepickerIntl } from '@angular/material/datepicker';
+import { MatDatepickerModule, DateRange, MatCalendarCellCssClasses, MatDatepickerIntl, MatCalendar } from '@angular/material/datepicker';
 import { CalendarEvent } from '../../models/calendar.model';
 
 @Injectable()
@@ -27,8 +27,24 @@ export class RelaMatDatepickerIntl extends MatDatepickerIntl {
   templateUrl: './calendar-picker.component.html'
 })
 export class CalendarPickerComponent implements AfterViewChecked {
+  private cdr = inject(ChangeDetectorRef);
+
+  @ViewChild(MatCalendar) matCalendar?: MatCalendar<Date>;
+
   @Input() selectedRange: DateRange<Date> | null = null;
-  @Input() existingEvents: CalendarEvent[] = [];
+
+  private _existingEvents: CalendarEvent[] = [];
+  @Input() set existingEvents(value: CalendarEvent[]) {
+    this._existingEvents = value;
+    this.cdr.markForCheck();
+    if (this.matCalendar) {
+      this.matCalendar.updateTodaysDate();
+    }
+  }
+  get existingEvents(): CalendarEvent[] {
+    return this._existingEvents;
+  }
+
   @Input() startTime = '08:00';
   @Input() endTime = '09:00';
 
@@ -102,6 +118,7 @@ export class CalendarPickerComponent implements AfterViewChecked {
       const dateStr = ev.start.dateTime || ev.start.date;
       if (!dateStr) return false;
       const evDate = new Date(dateStr);
+
       return evDate.getDate() === date.getDate() &&
              evDate.getMonth() === date.getMonth() &&
              evDate.getFullYear() === date.getFullYear();
@@ -114,6 +131,7 @@ export class CalendarPickerComponent implements AfterViewChecked {
       const dateStr = ev.start.dateTime || ev.start.date;
       if (!dateStr) return false;
       const evDate = new Date(dateStr);
+
       return evDate.getDate() === date.getDate() &&
              evDate.getMonth() === date.getMonth() &&
              evDate.getFullYear() === date.getFullYear();

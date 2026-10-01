@@ -5,8 +5,8 @@
       Próximos Eventos
     </h2>
 
-    <button mat-flat-button color="primary" class="btn-open-modal" routerLink="/novo-evento">
-      <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-plus" /> Novo Evento
+    <button mat-flat-button color="primary" class="btn-open-modal" routerLink="/gerenciar-evento">
+      <mat-icon>edit_calendar</mat-icon> Gerenciar Evento
     </button>
   </div>
 
@@ -25,25 +25,46 @@
   }
 
   @if (!loading && eventos.length > 0) {
-    <ul>
-      @for (ev of eventos; track ev.id) {
-        <li>
-          <div class="data-badge">
-            <mat-icon fontSet="fontawesome" fontIcon="fa-regular fa-clock" />
-            {{ ev.start.dateTime || ev.start.date | date:'dd/MM/yyyy HH:mm' }}
+    <div class="events-grid">
+      @for (ev of paginatedEvents; track ev.id) {
+        <a [href]="getGoogleCalendarLink(ev)" target="_blank" rel="noopener noreferrer" class="event-card-link">
+          <div class="event-card">
+            <div class="card-date">
+              {{ ev.start.dateTime || ev.start.date | date:'dd/MM/yyyy - HH:mm' }}h
+            </div>
+            <div class="card-content">
+              <h3>{{ ev.summary }}</h3>
+
+              <p class="card-location">
+                <mat-icon fontSet="fontawesome" fontIcon="fa-location-dot" />
+                <span>{{ ev.location || 'Local não informado' }}</span>
+              </p>
+
+              @if (ev.description) {
+                <p class="card-description" [title]="ev.description">
+                  {{ ev.description }}
+                </p>
+              }
+            </div>
+            <div class="card-footer-action">
+              <span>Adicionar à Agenda <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-plus" /></span>
+            </div>
           </div>
-          <div class="detalhes">
-            <strong>{{ ev.summary }}</strong>
-            @if (ev.description) {
-              <p>{{ ev.description }}</p>
-            }
-            @if (ev.location) {
-              <p><mat-icon>location_on</mat-icon> {{ ev.location }}</p>
-            }
-          </div>
-        </li>
+        </a>
       }
-    </ul>
+    </div>
+
+    @if (totalPages > 1) {
+      <div class="pagination-controls">
+        <button mat-stroked-button (click)="prevPage()" [disabled]="currentPage === 1">
+          <mat-icon fontSet="fontawesome" fontIcon="fa-chevron-left" /> Anterior
+        </button>
+        <span class="page-indicator">Página {{ currentPage }} de {{ totalPages }}</span>
+        <button mat-stroked-button (click)="nextPage()" [disabled]="currentPage === totalPages">
+          Próxima <mat-icon fontSet="fontawesome" fontIcon="fa-chevron-right" />
+        </button>
+      </div>
+    }
   }
 
   @if (!loading && eventos.length === 0 && !errorMessage) {

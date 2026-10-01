@@ -10,7 +10,7 @@ dotenv.config();
 async function main() {
   const config = {
     redirectUri: 'http://localhost:3000',
-    scope: 'https://www.googleapis.com/auth/calendar.readonly',
+    scope: 'https://www.googleapis.com/auth/calendar',
     clientId: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET
   };

@@ -4,6 +4,6 @@ import { CalendarForm } from './forms/calendar.form/calendar.form';
 
 export const routes: Routes = [
   { path: '', component: AgendaComponent, data: { title: '' } },
-  { path: 'novo-evento', component: CalendarForm, data: { title: 'Novo Evento' } }
+  { path: 'gerenciar-evento', component: CalendarForm, data: { title: 'Gerenciar Evento' } }
 ];
 

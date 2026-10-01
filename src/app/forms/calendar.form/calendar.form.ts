@@ -2,15 +2,18 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
+import { MatTabsModule } from '@angular/material/tabs';
 import { DateRange } from '@angular/material/datepicker';
 import { MAT_DATE_LOCALE, provideNativeDateAdapter } from '@angular/material/core';
 import { CalendarService } from './../../services/calendar.service';
 import { CalendarEvent } from './../../models/calendar.model';
 import { CalendarPickerComponent } from './../../components/calendar-picker.component/calendar-picker.component';
+import { environment } from '../../../environments/environment.development';
 
 @Component({
   imports: [
@@ -21,6 +24,7 @@ import { CalendarPickerComponent } from './../../components/calendar-picker.comp
     MatInputModule,
     MatFormFieldModule,
     MatIconModule,
+    MatTabsModule,
     CalendarPickerComponent
   ],
   providers: [
@@ -34,6 +38,7 @@ import { CalendarPickerComponent } from './../../components/calendar-picker.comp
 export class CalendarForm implements OnInit {
   private fb = inject(FormBuilder);
   private calendarService = inject(CalendarService);
+  private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
 
   loading = signal(false);
@@ -55,6 +60,11 @@ export class CalendarForm implements OnInit {
     endTime: ['09:00', Validators.required],
     location: ['']
   });
+
+  get iframeSRC(): SafeResourceUrl {
+    const url = `https://calendar.google.com/calendar/embed?src=${encodeURIComponent(environment.google_calendar_id)}&ctz=America%2FSao_Paulo&hl=pt-BR`;
+    return this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
 
   ngOnInit() {
     this.loadOccupiedSlots();
@@ -103,7 +113,12 @@ export class CalendarForm implements OnInit {
   formatEventDate(dateString?: string): string {
     if (!dateString) return '';
     const date = new Date(dateString);
-    return date.toLocaleString('pt-BR', { dateStyle: 'short', timeStyle: 'short' });
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = date.getFullYear();
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+    return `${day}/${month}/${year}, ${hours}:${minutes}`;
   }
 
   onSubmit() {
