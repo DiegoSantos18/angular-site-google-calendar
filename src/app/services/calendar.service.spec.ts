@@ -40,33 +40,28 @@ describe('CalendarService', () => {
     expect(service).toBeTruthy();
   });
 
-  it('should fetch calendar events successfully', () => {
+  it('should fetch calendar events successfully with skip and take', () => {
     const dummyEvents: CalendarEvent[] = [
       {
         id: '1',
         summary: 'Reunião de Equipe',
-        start: {
-          dateTime: '2026-10-01T10:00:00Z'
-        },
-        end: {
-          dateTime: '2026-10-01T11:00:00Z'
-        },
+        start: { dateTime: '2026-10-01T10:00:00Z' },
+        end: { dateTime: '2026-10-01T11:00:00Z' },
         location: 'Sala 1'
       }
     ];
 
     let result: CalendarEvent[] | undefined;
 
-    service.getEvents().subscribe(events => {
+    service.getEvents(0, 30).subscribe(events => {
       result = events;
     });
 
     const req = httpMock.expectOne(
-      request => request.url.includes('/calendar')
+      request => request.url.includes('/calendar') && request.url.includes('skip=0') && request.url.includes('take=30')
     );
 
     expect(req.request.method).toBe('GET');
-
     req.flush(dummyEvents);
 
     expect(result).toEqual(dummyEvents);
@@ -108,6 +103,27 @@ describe('CalendarService', () => {
 
     expect(req.request.method).toBe('POST');
     expect(req.request.body).toEqual(newEventData);
+
+    req.flush(mockResponse);
+
+    expect(result).toEqual(mockResponse);
+  });
+
+  it('should delete an event successfully via DELETE', () => {
+    const eventId = '2';
+    const mockResponse = { message: 'Evento deletado com sucesso!' };
+
+    let result: any;
+
+    service.deleteEvent(eventId).subscribe(response => {
+      result = response;
+    });
+
+    const req = httpMock.expectOne(
+      request => request.url.includes('/calendar') && request.method === 'DELETE'
+    );
+
+    expect(req.request.method).toBe('DELETE');
 
     req.flush(mockResponse);
 

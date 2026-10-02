@@ -7,7 +7,7 @@
     <h3><mat-icon class="calendar-icon-title">edit_calendar</mat-icon> Gerenciar Evento</h3>
     <p class="subtitle">Gerencie seus compromissos e visualize o calendário integrado.</p>
 
-    <mat-tab-group class="calendar-tabs">
+    <mat-tab-group class="calendar-tabs" [selectedIndex]="selectedTabIndex()" (selectedIndexChange)="onTabChange($event)">
       <mat-tab label="Novo Evento">
         <div class="tab-content-wrapper">
           <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
@@ -16,33 +16,47 @@
               <app-calendar-picker
                 [selectedRange]="selectedRange"
                 [existingEvents]="existingEvents()"
+                [calendarHeaderDate]="currentCalendarDate()"
                 [startTime]="eventForm.get('startTime')?.value"
                 [endTime]="eventForm.get('endTime')?.value"
+                [disabled]="loadingEvents()"
                 (rangeChange)="onRangeChange($event)"
+                (activeDateChange)="onActiveDateChange($event)"
                 (startTimeChange)="eventForm.get('startTime')?.setValue($event)"
                 (endTimeChange)="eventForm.get('endTime')?.setValue($event)">
               </app-calendar-picker>
 
               <div class="form-pane">
 
-                <div class="busy-slots-section">
+                <div class="busy-slots-section" [class.max-height]="loadingEvents() || filteredEventsForMonth.length === 0">
                   <h4><mat-icon fontSet="fontawesome" fontIcon="fa-clock" /> Eventos Já Agendados:</h4>
                   @if (loadingEvents()) {
-                    <p class="loading-text">A carregar disponibilidade...</p>
-                  } @else if (existingEvents().length === 0) {
-                    <p class="free-text">Nenhum evento agendado. Livre total!</p>
+                    <div class="loading-text">
+                      <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />&nbsp;
+                      A carregar disponibilidade...
+                    </div>
+                  } @else if (filteredEventsForMonth.length === 0) {
+                    <p class="free-text">Nenhum evento agendado para este mês. Livre total!</p>
                   } @else {
                     <ul class="slots-list">
-                      @for (ev of existingEvents(); track ev.id) {
+                      @for (ev of filteredEventsForMonth; track ev.id) {
                         <li>
-                          <strong>{{ ev.summary }}</strong>
-                          <span>{{ formatEventDate(ev.start.dateTime || ev.start.date) }}</span>
-                          @if (ev.location){
-                            <span><mat-icon>location_on</mat-icon> {{ ev.location }}</span>
-                          }
-                          @else {
-                            <span><mat-icon>location_on</mat-icon> Local não informado</span>
-                          }
+                          <div class="event-details">
+                            <strong>{{ ev.summary }}</strong>
+                            <span>{{ formatEventDateRange(ev) }}</span>
+                            @if (ev.location) {
+                              <span class="event-location">
+                                <mat-icon>location_on</mat-icon> {{ ev.location }}
+                              </span>
+                            } @else {
+                              <span class="event-location">
+                                <mat-icon>location_on</mat-icon> Local não informado
+                              </span>
+                            }
+                          </div>
+                          <span class="event-actions" (click)="deleteEvent(ev.id)" title="Excluir evento">
+                            <mat-icon>delete</mat-icon>
+                          </span>
                         </li>
                       }
                     </ul>
@@ -96,9 +110,23 @@
       </mat-tab>
 
       <mat-tab label="Visualizar Agenda">
-        <div class="tab-content-wrapper iframe-tab-pane">
-          <iframe [src]="iframeSRC" style="border: 0" width="100%" height="450" frameborder="0" scrolling="no"></iframe>
-        </div>
+        <ng-template matTabContent>
+          <div class="tab-content-wrapper iframe-tab-pane">
+          @if (iframeLoading()) {
+            <div class="iframe-loading-overlay">
+              <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+              <span>A carregar agenda...</span>
+            </div>
+          }
+          <iframe
+            [src]="iframeSRC"
+            width="100%"
+            height="450"
+            frameborder="0"
+            scrolling="no">
+          </iframe>
+          </div>
+        </ng-template>
       </mat-tab>
     </mat-tab-group>
   </div>

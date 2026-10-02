@@ -8,20 +8,25 @@ import { environment } from '../../environments/environment';
 export class CalendarService {
   private http = inject(HttpClient);
 
-  getEvents(): Observable<CalendarEvent[]> {
-    const poolingTime = environment.apiPooling ?? undefined;
-    if (poolingTime) {
-      // Dispara AGORA (0 ms) e depois repete a cada x minutos (x ms) - Simula um SignalR
-      return timer(0, poolingTime).pipe(
-        switchMap(() => this.http.get<CalendarEvent[]>(`${environment.apiUrl}/calendar`))
-      );
+  getEvents(skip: number = 0, take: number = 50): Observable<CalendarEvent[]> {
+    const action = 'get-events';
+    const methodCall = this.http.get<CalendarEvent[]>(
+      `${environment.apiUrl}/calendar?action=${action}&skip=${skip}&take=${take}`
+    );
+
+    const poolingTime = environment.apiPooling;
+    if (poolingTime && poolingTime > 0) {
+      return timer(0, poolingTime).pipe(switchMap(() => methodCall));
     }
 
-    // Dispara NORMAL - Simula carregamento normal de rota na tela
-    return this.http.get<CalendarEvent[]>(`${environment.apiUrl}/calendar`);
+    return methodCall;
   }
 
   addEvent(eventData: CreateCalendarEvent): Observable<CalendarEvent> {
-    return this.http.post<CalendarEvent>(`${environment.apiUrl}/calendar`, eventData);
+    return this.http.post<CalendarEvent>(`${environment.apiUrl}/calendar?action=add-event`, eventData);
+  }
+
+  deleteEvent(eventId: string): Observable<any> {
+    return this.http.delete(`${environment.apiUrl}/calendar?action=delete-event&id=${eventId}`);
   }
 }

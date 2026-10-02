@@ -42,6 +42,15 @@ describe('CalendarPickerComponent', () => {
     expect(emittedRange.end).toBeNull();
   });
 
+  it('should emit activeDateChange when active date changes', () => {
+    const spy = vi.spyOn(component.activeDateChange, 'emit');
+    const testDate = new Date(2026, 9, 1);
+
+    component.onActiveDateChange(testDate);
+
+    expect(spy).toHaveBeenCalledWith(testDate);
+  });
+
   it('should emit startTimeChange when start time input changes', () => {
     const spy = vi.spyOn(component.startTimeChange, 'emit');
     const mockEvent = {

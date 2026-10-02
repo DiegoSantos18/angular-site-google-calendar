@@ -5,6 +5,12 @@
   border: 1px solid var(--mat-sys-outline-variant);
   height: fit-content;
 
+  &.disabled-pane {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
   mat-calendar {
     width: 100%;
   }

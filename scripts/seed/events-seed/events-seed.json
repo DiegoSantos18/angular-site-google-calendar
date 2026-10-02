@@ -1,0 +1,90 @@
+[
+  {
+    "summary": "Workshop: Arquitetura Limpa com .NET 10 e DDD",
+    "description": "Discussão prática sobre a aplicação de Domain-Driven Design (DDD) e CQRS em microsserviços de alta performance.",
+    "dayOffset": 1,
+    "startTime": "19:00",
+    "endTime": "21:30",
+    "location": "Auditório Principal Prefeitura (Caxias do Sul, RS)"
+  },
+  {
+    "summary": "Daily Async & Code Review: Microsserviços",
+    "description": "Alinhamento rápido da equipe sobre pull requests, contratos de API e tratamento de exceções.",
+    "dayOffset": 2,
+    "startTime": "09:00",
+    "endTime": "09:30",
+    "location": "Google Meet (Online)"
+  },
+  {
+    "summary": "Code Review Coletivo: Microsserviços .NET",
+    "description": "Análise detalhada de desacoplamento de camadas e boas práticas de Domain Events.",
+    "dayOffset": 4,
+    "startTime": "14:00",
+    "endTime": "15:30",
+    "location": "Google Meet (Online)"
+  },
+  {
+    "summary": "Imersão em Full-Stack: Vue 3, TypeScript e Pinia",
+    "description": "Workshop prático focado em componentização avançada, gerenciamento de estado reativo e integrações.",
+    "dayOffset": 7,
+    "startTime": "14:00",
+    "endTime": "18:00",
+    "location": "Sala de Reuniões B – Coworking Tech Hub"
+  },
+  {
+    "summary": "Alinhamento de Arquitetura Front-end (Vite & SCSS)",
+    "description": "Padronização de variáveis de design system, temas dinâmicos (Dark Mode) e componentes reutilizáveis.",
+    "dayOffset": 10,
+    "startTime": "10:30",
+    "endTime": "12:00",
+    "location": "Caxias Do Sul RS"
+  },
+  {
+    "summary": "Sprint Planning & Alinhamento Q4",
+    "description": "Planejamento estratégico das entregas para o trimestre e definição de metas de telemetria.",
+    "dayOffset": 14,
+    "startTime": "09:30",
+    "endTime": "11:00",
+    "location": "Google Meet (Online)"
+  },
+  {
+    "summary": "Refatoração de Repositórios e Migrações Multi-tenant",
+    "description": "Sessão hands-on abordando estratégias de isolamento de dados no PostgreSQL e otimização de queries.",
+    "dayOffset": 17,
+    "startTime": "16:00",
+    "endTime": "18:00",
+    "location": "Remoto / Escritório"
+  },
+  {
+    "summary": "Lançamento do Produto: Observa AI (Telemetry & Insights)",
+    "description": "Apresentação oficial da ferramenta de monitoramento inteligente baseada em IA para análise de logs.",
+    "dayOffset": 21,
+    "startTime": "20:00",
+    "endTime": "21:00",
+    "location": "Transmissão ao Vivo / YouTube Live"
+  },
+  {
+    "summary": "Benchmark de Performance: .NET 10 vs .NET 9",
+    "description": "Testes de carga e consumo de memória utilizando k6 e métricas de telemetria.",
+    "dayOffset": 24,
+    "startTime": "15:00",
+    "endTime": "16:30",
+    "location": "Laboratório de Inovação"
+  },
+  {
+    "summary": "Mentoria Técnica: CI/CD com Docker e Azure DevOps",
+    "description": "Sessão prática abordando a configuração de agentes auto-hospedados (self-hosted) no Linux via WSL.",
+    "dayOffset": 28,
+    "startTime": "10:00",
+    "endTime": "11:30",
+    "location": "Laboratório de Inovação"
+  },
+  {
+    "summary": "Retrospectiva do Ciclo de Seed & Infraestrutura",
+    "description": "Fechamento do ciclo de entregas e retrospectiva técnica da equipe.",
+    "dayOffset": 30,
+    "startTime": "17:00",
+    "endTime": "18:30",
+    "location": "Google Meet (Online)"
+  }
+]

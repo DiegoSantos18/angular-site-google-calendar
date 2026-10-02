@@ -1,7 +1,7 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -40,14 +40,18 @@ export class CalendarForm implements OnInit {
   private calendarService = inject(CalendarService);
   private sanitizer = inject(DomSanitizer);
   private router = inject(Router);
+  private route = inject(ActivatedRoute);
 
   loading = signal(false);
   loadingEvents = signal(true);
   successMessage = signal('');
   errorMessage = signal('');
+  selectedTabIndex = signal(0);
+  iframeLoading = signal(true);
 
   existingEvents = signal<CalendarEvent[]>([]);
   selectedRange: DateRange<Date> | null = null;
+  currentCalendarDate = signal<Date>(new Date());
 
   eventForm: FormGroup = this.fb.group({
     summary: ['', Validators.required],
@@ -66,19 +70,73 @@ export class CalendarForm implements OnInit {
     return this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
+  get filteredEventsForMonth(): CalendarEvent[] {
+    const events = this.existingEvents();
+    const activeDate = this.selectedRange?.start || this.currentCalendarDate();
+    const targetMonth = activeDate.getMonth();
+    const targetYear = activeDate.getFullYear();
+    const startOfMonth = new Date(targetYear, targetMonth, 1, 0, 0, 0, 0);
+    const endOfMonth = new Date(targetYear, targetMonth + 1, 0, 23, 59, 59, 999);
+
+    return events.filter(ev => {
+      if (!ev.start) return false;
+      const startDateStr = ev.start.dateTime || ev.start.date;
+      if (!startDateStr) return false;
+
+      const evStart = new Date(startDateStr);
+      const endDateStr = ev.end?.dateTime || ev.end?.date || startDateStr;
+      const evEnd = new Date(endDateStr);
+
+      return evStart <= endOfMonth && evEnd >= startOfMonth;
+    });
+  }
+
   ngOnInit() {
     this.loadOccupiedSlots();
+
+    this.route.queryParams.subscribe(params => {
+      if (params['tab'] === 'visualizar') {
+        setTimeout(() => {
+          this.selectedTabIndex.set(1);
+          this.iframeLoading.set(true);
+          setTimeout(() => {
+            this.iframeLoading.set(false);
+          }, 1200);
+        }, 50);
+      }
+    });
+  }
+
+  onTabChange(index: number) {
+  this.selectedTabIndex.set(index);
+
+  if (index === 1) {
+    this.iframeLoading.set(true);
+    setTimeout(() => {
+      this.iframeLoading.set(false);
+    }, 1200);
+  }
+}
+
+  onIframeLoad() {
+    if (this.iframeLoading()) {
+      this.iframeLoading.set(false);
+    }
   }
 
   loadOccupiedSlots() {
     this.loadingEvents.set(true);
-    this.calendarService.getEvents().subscribe({
+    this.eventForm.disable();
+
+    this.calendarService.getEvents(0, 31).subscribe({
       next: (events) => {
         this.existingEvents.set(events);
         this.loadingEvents.set(false);
+        this.eventForm.enable();
       },
       error: () => {
         this.loadingEvents.set(false);
+        this.eventForm.enable();
       }
     });
   }
@@ -91,6 +149,10 @@ export class CalendarForm implements OnInit {
         end: range?.end || range?.start || null
       }
     });
+  }
+
+  onActiveDateChange(date: Date) {
+    this.currentCalendarDate.set(date);
   }
 
   formatRangeDisplay(): string {
@@ -118,13 +180,28 @@ export class CalendarForm implements OnInit {
     const year = date.getFullYear();
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
-    return `${day}/${month}/${year}, ${hours}:${minutes}`;
+    return `${day}/${month}/${year} ${hours}:${minutes}H`;
+  }
+
+  formatEventDateRange(ev: CalendarEvent): string {
+    if (!ev.start) return '';
+    const startStr = ev.start.dateTime || ev.start.date;
+    const formattedStart = this.formatEventDate(startStr);
+
+    const endStr = ev.end?.dateTime || ev.end?.date;
+    if (!endStr) return formattedStart;
+
+    const formattedEnd = this.formatEventDate(endStr);
+    if (formattedStart === formattedEnd) return formattedStart;
+
+    return `${formattedStart} até ${formattedEnd}`;
   }
 
   onSubmit() {
     if (this.eventForm.invalid || !this.selectedRange?.start) return;
 
     this.loading.set(true);
+    this.loadingEvents.set(true);
     this.successMessage.set('');
     this.errorMessage.set('');
 
@@ -152,13 +229,30 @@ export class CalendarForm implements OnInit {
     this.calendarService.addEvent(payload).subscribe({
       next: () => {
         this.loading.set(false);
+        this.loadingEvents.set(false);
         this.successMessage.set('Evento agendado com sucesso!');
         setTimeout(() => this.router.navigate(['/']), 1500);
       },
       error: (err) => {
         this.loading.set(false);
+        this.loadingEvents.set(false);
         this.errorMessage.set('Erro ao agendar. O horário selecionado está em conflito.');
         console.error(err);
+      }
+    });
+  }
+
+  deleteEvent(eventId: string) {
+    if (!confirm('Tem certeza de que deseja excluir este evento?')) {
+      return;
+    }
+
+    this.calendarService.deleteEvent(eventId).subscribe({
+      next: () => {
+        this.existingEvents.update(events => events.filter(ev => ev.id !== eventId));
+      },
+      error: (err) => {
+        console.error('Erro ao excluir o evento:', err);
       }
     });
   }

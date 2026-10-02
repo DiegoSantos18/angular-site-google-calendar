@@ -1,10 +1,10 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Component, inject, signal, computed } from '@angular/core';
+import { toSignal, toObservable } from '@angular/core/rxjs-interop';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { RouterLink } from '@angular/router';
-import { catchError, map, of, startWith } from 'rxjs';
+import { catchError, map, of, startWith, switchMap } from 'rxjs';
 import { CalendarService } from '../../services/calendar.service';
 import { CalendarEvent } from '../../models/calendar.model';
 
@@ -17,46 +17,60 @@ import { CalendarEvent } from '../../models/calendar.model';
 export class AgendaComponent {
   private calendarService = inject(CalendarService);
 
-  currentPage = 1;
+  currentPage = signal(1);
   pageSize = 6;
 
   agendaQuery = toSignal(
-    this.calendarService.getEvents().pipe(
-      map((eventos) => ({ eventos, loading: false, error: '' })),
-      startWith({ eventos: [] as CalendarEvent[], loading: true, error: '' }),
-      catchError((err) => {
-        console.error('Erro ao buscar eventos:', err);
-        return of({
-          eventos: [] as CalendarEvent[],
-          loading: false,
-          error: 'Não foi possível carregar a agenda no momento.'
-        });
+    toObservable(this.currentPage).pipe(
+      switchMap((page) => {
+        const skip = (page - 1) * this.pageSize;
+        return this.calendarService.getEvents(skip, this.pageSize + 1).pipe(
+          map((eventos) => {
+            const hasMore = eventos.length > this.pageSize;
+            const paginatedList = hasMore ? eventos.slice(0, this.pageSize) : eventos;
+            return { eventos: paginatedList, hasMore, loading: false, error: '' };
+          }),
+          startWith({ eventos: [] as CalendarEvent[], hasMore: false, loading: true, error: '' }),
+          catchError((err) => {
+            console.error('Erro ao buscar eventos:', err);
+            return of({
+              eventos: [] as CalendarEvent[],
+              hasMore: false,
+              loading: false,
+              error: 'Não foi possível carregar a agenda no momento.'
+            });
+          })
+        );
       })
-    )
+    ),
+    { initialValue: { eventos: [] as CalendarEvent[], hasMore: false, loading: true, error: '' } }
   );
 
-  get eventos() { return this.agendaQuery()?.eventos ?? []; }
-  get loading() { return this.agendaQuery()?.loading ?? true; }
-  get errorMessage() { return this.agendaQuery()?.error ?? ''; }
-
-  get totalPages(): number {
-    return Math.ceil(this.eventos.length / this.pageSize) || 1;
+  get hasMorePages() {
+    return this.agendaQuery().hasMore;
   }
 
+  get eventos() {
+    return this.agendaQuery().eventos;
+  }
+  get loading() { return this.agendaQuery().loading; }
+  get errorMessage() { return this.agendaQuery().error; }
+
+  totalPages = computed(() => {
+    return this.hasMorePages ? this.currentPage() + 1 : this.currentPage();
+  });
+
   get paginatedEvents(): CalendarEvent[] {
-    const start = (this.currentPage - 1) * this.pageSize;
-    return this.eventos.slice(start, start + this.pageSize);
+    return this.eventos;
   }
 
   nextPage() {
-    if (this.currentPage < this.totalPages) {
-      this.currentPage++;
-    }
+    this.currentPage.update(p => p + 1);
   }
 
   prevPage() {
-    if (this.currentPage > 1) {
-      this.currentPage--;
+    if (this.currentPage() > 1) {
+      this.currentPage.update(p => p - 1);
     }
   }
 

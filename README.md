@@ -44,6 +44,7 @@ As chaves sensíveis da API do Google:
 * `GOOGLE_CLIENT_SECRET`
 * `GOOGLE_REFRESH_TOKEN`
 * `GOOGLE_CALENDAR_ID`
+* `API_URL_SEED`
 
 **nunca** são expostas no código do frontend.
 
@@ -197,6 +198,7 @@ GOOGLE_CLIENT_ID
 GOOGLE_CLIENT_SECRET
 GOOGLE_REFRESH_TOKEN
 GOOGLE_CALENDAR_ID
+API_URL_SEED (url para seed local)
 ```
 
 > ⚠️ **Importante:** nunca versione o ficheiro `.env` ou exponha credenciais do Google no código-fonte ou no frontend.

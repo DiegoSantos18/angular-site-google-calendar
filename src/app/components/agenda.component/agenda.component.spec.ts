@@ -8,7 +8,7 @@ import { CommonModule } from '@angular/common';
 import { provideRouter } from '@angular/router';
 
 class MockCalendarService {
-  getEvents() {
+  getEvents(skip: number, take: number) {
     return of([
       {
         id: '1',
@@ -49,7 +49,7 @@ describe('AgendaComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should load events successfully, generate calendar template link and pagination', () => {
+  it('should load events successfully using skip and take parameters', () => {
     expect(component.loading).toBeFalsy();
     expect(component.errorMessage).toBe('');
     expect(component.eventos.length).toBe(1);
@@ -57,7 +57,5 @@ describe('AgendaComponent', () => {
     const link = component.getGoogleCalendarLink(component.paginatedEvents[0]);
     expect(link).toContain('action=TEMPLATE');
     expect(link).toContain('Reuni%C3%A3o%20de%20Teste');
-
-    expect(component.totalPages).toBe(1);
   });
 });

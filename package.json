@@ -9,6 +9,8 @@
     "test": "ng test",
     "vercel:dev": "vercel dev",
     "auth:generate": "tsx scripts/gerar-token.ts",
+    "seed:data": "tsx scripts/seed/seed.ts",
+    "seed:delete": "tsx scripts/seed/seed-delete.ts",
     "env:pull:dev": "vercel env pull .env",
     "env:pull:preview": "vercel env pull --environment=preview .env",
     "env:pull:prod": "vercel env pull --environment=production .env",

@@ -26,7 +26,22 @@ describe('CalendarForm', () => {
 
     calendarService = TestBed.inject(CalendarService);
 
-    vi.spyOn(calendarService, 'getEvents').mockReturnValue(of([]));
+    vi.spyOn(calendarService, 'getEvents').mockReturnValue(of([
+      {
+        id: '1',
+        summary: 'Evento Outubro',
+        start: { dateTime: '2026-10-10T10:00:00' },
+        end: { dateTime: '2026-10-10T11:00:00' }
+      },
+      {
+        id: '2',
+        summary: 'Evento Novembro',
+        start: { dateTime: '2026-11-15T10:00:00' },
+        end: { dateTime: '2026-11-15T11:00:00' }
+      }
+    ]));
+
+    vi.spyOn(calendarService, 'deleteEvent').mockReturnValue(of({}));
 
     fixture = TestBed.createComponent(CalendarForm);
     component = fixture.componentInstance;
@@ -36,6 +51,16 @@ describe('CalendarForm', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  it('should filter events based on current active calendar month', () => {
+    component.onActiveDateChange(new Date(2026, 9, 1));
+    expect(component.filteredEventsForMonth.length).toBe(1);
+    expect(component.filteredEventsForMonth[0].summary).toBe('Evento Outubro');
+
+    component.onActiveDateChange(new Date(2026, 10, 1));
+    expect(component.filteredEventsForMonth.length).toBe(1);
+    expect(component.filteredEventsForMonth[0].summary).toBe('Evento Novembro');
   });
 
   it('should patch dateRange group when onRangeChange is called', () => {
@@ -73,5 +98,16 @@ describe('CalendarForm', () => {
     });
 
     expect(component.eventForm.valid).toBeTruthy();
+  });
+
+  it('should remove event from existingEvents when deleteEvent is called and confirmed', () => {
+    vi.spyOn(window, 'confirm').mockReturnValue(true);
+
+    expect(component.existingEvents().length).toBe(2);
+
+    component.deleteEvent('1');
+
+    expect(component.existingEvents().length).toBe(1);
+    expect(component.existingEvents()[0].id).toBe('2');
   });
 });
