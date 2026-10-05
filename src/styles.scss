@@ -134,3 +134,10 @@ app-calendar-form {
   --mdc-snackbar-supporting-text-color: #fff;
   --mat-snackbar-button-color: #fff;
 }
+
+.cdk-global-overlay-wrapper:has(.mat-mdc-snack-bar-container) {
+  justify-content: flex-end !important;
+  align-items: flex-end !important;
+  padding: 16px;
+  box-sizing: border-box;
+}

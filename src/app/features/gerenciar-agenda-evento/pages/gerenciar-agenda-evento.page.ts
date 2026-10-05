@@ -173,8 +173,9 @@ export class GerenciarAgendaEventoPage implements OnInit {
 
   private showCalendarMessage(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'Fechar', {
-      duration: 5000,
-      panelClass: type === 'success' ? ['success-snackbar'] : ['error-snackbar']
+      duration: type === 'success' ? 4000 : 7000,
+      politeness: type === 'error' ? 'assertive' : 'polite',
+      panelClass: [`app-snackbar-${type}`]
     });
   }
 }

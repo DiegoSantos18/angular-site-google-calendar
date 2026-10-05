@@ -254,8 +254,6 @@ export class NovoEventoForm {
   private showMessage(message: string, type: 'success' | 'error'): void {
     this.snackBar.open(message, 'Fechar', {
       duration: type === 'success' ? 4000 : 7000,
-      horizontalPosition: 'end',
-      verticalPosition: 'bottom',
       politeness: type === 'error' ? 'assertive' : 'polite',
       panelClass: [`app-snackbar-${type}`]
     });
