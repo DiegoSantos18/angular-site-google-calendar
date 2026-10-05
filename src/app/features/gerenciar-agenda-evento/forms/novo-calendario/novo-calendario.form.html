@@ -17,7 +17,7 @@
     }
   </mat-form-field>
 
-  <fieldset class="calendar-color-field" [disabled]="loading">
+  <fieldset class="calendar-color-field" [disabled]="loading || calendarForm.disabled">
     <legend>Cor da agenda</legend>
     <div class="calendar-color-options" role="group" aria-label="Escolher cor da agenda">
       @for (option of calendarColors; track option.color) {
@@ -36,11 +36,11 @@
   </fieldset>
 
   <div class="form-actions">
-    <button mat-button type="button" (click)="cancel.emit()" [disabled]="loading">
+    <button mat-button type="button" (click)="cancel.emit()" [disabled]="loading || calendarForm.disabled">
       Cancelar
     </button>
     <button mat-flat-button color="primary" type="submit"
-      [disabled]="calendarForm.invalid || loading">
+      [disabled]="calendarForm.invalid || loading || calendarForm.disabled">
       <mat-icon fontSet="fontawesome"
         [fontIcon]="loading ? 'fa-spinner fa-spin' : 'fa-calendar-plus'" />
       {{ loading ? 'Criando agenda...' : 'Criar agenda' }}

@@ -35,18 +35,18 @@ export interface CalendarActionResponse {
   message: string;
 }
 
-export const googleEventPalette: Record<string, string> = {
-  '1': '#a4bdfc', // Lavanda
-  '2': '#7ae7bf', // Sálvia
-  '3': '#dbadff', // Uva
-  '4': '#ff887c', // Flamingo
-  '5': '#fbd75b', // Banana
-  '6': '#ffb878', // Tangerina
-  '7': '#46d6db', // Pavão
-  '8': '#e1e1e1', // Grafite
-  '9': '#5484ed', // Mirtilo
-  '10': '#51b749', // Manjericão
-  '11': '#dc2127'  // Tomate
+export const googleEventPalette: Record<string, { color: string; label: string }> = {
+  '1': { color: '#a4bdfc', label: 'Lavanda' },
+  '2': { color: '#7ae7bf', label: 'Sálvia' },
+  '3': { color: '#dbadff', label: 'Uva' },
+  '4': { color: '#ff887c', label: 'Flamingo' },
+  '5': { color: '#fbd75b', label: 'Banana' },
+  '6': { color: '#ffb878', label: 'Tangerina' },
+  '7': { color: '#46d6db', label: 'Pavão' },
+  '8': { color: '#e1e1e1', label: 'Grafite' },
+  '9': { color: '#5484ed', label: 'Mirtilo' },
+  '10': { color: '#51b749', label: 'Manjericão' },
+  '11': { color: '#dc2127', label: 'Tomate' }
 };
 
 export function resolveEventColor(
@@ -56,5 +56,5 @@ export function resolveEventColor(
     return event.eventColor;
   }
 
-  return event.colorId ? googleEventPalette[event.colorId] ?? null : null;
+  return event.colorId ? googleEventPalette[event.colorId]?.color ?? null : null;
 }

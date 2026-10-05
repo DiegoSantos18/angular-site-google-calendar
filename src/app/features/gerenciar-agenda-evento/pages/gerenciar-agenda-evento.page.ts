@@ -175,7 +175,9 @@ export class GerenciarAgendaEventoPage implements OnInit {
     this.snackBar.open(message, 'Fechar', {
       duration: type === 'success' ? 4000 : 7000,
       politeness: type === 'error' ? 'assertive' : 'polite',
-      panelClass: [`app-snackbar-${type}`]
+      panelClass: [`app-snackbar-${type}`],
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom'
     });
   }
 }

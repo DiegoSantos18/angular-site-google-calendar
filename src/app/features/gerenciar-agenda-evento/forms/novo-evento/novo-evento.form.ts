@@ -24,19 +24,6 @@ import { CalendarPickerComponent } from '../../../../shared/components/calendar-
 import { ConfirmDialogComponent } from '../../../../shared/components/confirm-dialog.component/confirm-dialog.component';
 
 const TIME_FORMAT_PATTERN = /^([01]\d|2[0-3]):[0-5]\d$/;
-const EVENT_COLOR_NAMES: Record<string, string> = {
-  '1': 'Lavanda',
-  '2': 'Sálvia',
-  '3': 'Uva',
-  '4': 'Flamingo',
-  '5': 'Banana',
-  '6': 'Tangerina',
-  '7': 'Pavão',
-  '8': 'Grafite',
-  '9': 'Mirtilo',
-  '10': 'Manjericão',
-  '11': 'Tomate'
-};
 
 @Component({
   imports: [
@@ -67,10 +54,10 @@ export class NovoEventoForm {
   existingEvents = signal<CalendarEvent[]>([]);
   selectedRange: DateRange<Date> | null = null;
   currentCalendarDate = signal<Date>(new Date());
-  readonly eventColors = Object.entries(googleEventPalette).map(([colorId, color]) => ({
+  readonly eventColors = Object.entries(googleEventPalette).map(([colorId, data]) => ({
     colorId,
-    color,
-    label: EVENT_COLOR_NAMES[colorId] ?? `Cor ${colorId}`
+    color: data.color,
+    label: data.label
   }));
 
   getCalendarColor(): string {
@@ -134,9 +121,11 @@ export class NovoEventoForm {
   }
 
   onSubmit() {
-    if (this.eventForm.invalid || !this.selectedRange?.start) return;
+    if (this.eventForm.invalid || !this.selectedRange?.start || this.loading()) return;
 
     this.loading.set(true);
+    this.eventForm.disable();
+
     const formValue = this.eventForm.value;
     const startDt: Date = formValue.dateRange.start;
     const endDt: Date = formValue.dateRange.end || startDt;
@@ -167,6 +156,7 @@ export class NovoEventoForm {
       },
       error: (err) => {
         this.loading.set(false);
+        this.eventForm.enable();
         console.error('Erro ao agendar o evento:', err);
         this.showMessage(this.getRequestErrorMessage(err, 'criar'), 'error');
       }
@@ -255,7 +245,9 @@ export class NovoEventoForm {
     this.snackBar.open(message, 'Fechar', {
       duration: type === 'success' ? 4000 : 7000,
       politeness: type === 'error' ? 'assertive' : 'polite',
-      panelClass: [`app-snackbar-${type}`]
+      panelClass: [`app-snackbar-${type}`],
+      horizontalPosition: 'right',
+      verticalPosition: 'bottom'
     });
   }
 
