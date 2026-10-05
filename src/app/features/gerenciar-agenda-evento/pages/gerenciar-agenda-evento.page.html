@@ -1,0 +1,125 @@
+<div class="calendar-wrapper">
+  <div class="calendar-form-container wide-modal">
+    <button class="btn-close" type="button" routerLink="/" aria-label="Voltar para a agenda" title="Voltar">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-arrow-left" />
+    </button>
+
+    <h3><mat-icon class="calendar-icon-title">edit_calendar</mat-icon> Gerenciar Agenda</h3>
+    <p class="subtitle">Gerencie seus compromissos e visualize o calendário integrado.</p>
+
+    <mat-tab-group class="calendar-tabs"
+      [selectedIndex]="selectedTabIndex()"
+      (selectedIndexChange)="onTabChange($event)">
+      <mat-tab label="Novo Evento">
+        <ng-template matTabContent>
+          <div class="tab-content-wrapper">
+            <app-novo-evento-form />
+          </div>
+        </ng-template>
+      </mat-tab>
+
+      <mat-tab label="Visualizar Agenda">
+        <ng-template matTabContent>
+          <div class="tab-content-wrapper calendar-management-layout">
+            <section class="calendar-preview-panel" aria-label="Visualização da agenda">
+              @if (!calendarsInitialized()) {
+                <div class="calendar-preview-empty">
+                  <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+                  <span>Carregando agendas...</span>
+                </div>
+              } @else if (!hasCalendars()) {
+                <div class="calendar-preview-empty">
+                  <mat-icon>calendar_month</mat-icon>
+                  <span>Cadastre ou selecione uma agenda para visualizá-la.</span>
+                </div>
+              } @else {
+                @if (iframeLoading()) {
+                  <div class="iframe-loading-overlay">
+                    <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+                    <span>Carregando agenda...</span>
+                  </div>
+                }
+                <iframe
+                  [src]="iframeSRC()"
+                  title="Agenda Google selecionada"
+                  width="100%"
+                  height="450"
+                  frameborder="0"
+                  scrolling="no"
+                  (load)="onIframeLoad()">
+                </iframe>
+              }
+            </section>
+
+            <aside class="calendar-management-panel" aria-label="Gerenciar agendas">
+              <div class="calendar-management-heading">
+                <mat-icon>calendar_month</mat-icon>
+                <div>
+                  <h4>Minhas agendas</h4>
+                  <p>Escolha qual agenda visualizar ou gerenciar.</p>
+                </div>
+              </div>
+
+              @if (calendarsInitialized() && hasCalendars()) {
+                <mat-form-field appearance="outline" class="calendar-select-field">
+                  <mat-label>Agenda selecionada</mat-label>
+                  <mat-select [value]="selectedCalendarId()" (selectionChange)="onCalendarChange($event.value)">
+                    @for (calendar of calendars(); track calendar.id) {
+                      <mat-option [value]="calendar.id">
+                        <span class="calendar-option">
+                          <span class="calendar-color-marker"
+                            [style.background-color]="getCalendarColor(calendar.backgroundColor)"></span>
+                          {{ calendar.summary || 'Agenda sem nome' }}
+                        </span>
+                      </mat-option>
+                    }
+                  </mat-select>
+                </mat-form-field>
+              } @else if (calendarsInitialized()) {
+                <p class="calendar-empty-hint">Você ainda não tem agendas secundárias.</p>
+              }
+
+              <div class="calendar-management-actions">
+                @if (!showCalendarForm()) {
+                  <button mat-flat-button color="primary" type="button" class="calendar-action-button create-calendar-button"
+                    (click)="createCalendar()"
+                    [disabled]="creatingCalendar() || deletingCalendar()">
+                    <mat-icon>add</mat-icon>
+                    Nova agenda
+                  </button>
+                }
+
+                @if (hasCalendars()) {
+                  <button mat-stroked-button color="warn" type="button" class="calendar-action-button delete-calendar-button"
+                    (click)="confirmDeleteCalendar()"
+                    [disabled]="creatingCalendar() || deletingCalendar()"
+                    matTooltip="Exclui permanentemente esta agenda e todos os eventos">
+                    <mat-icon>delete_outline</mat-icon>
+                    Excluir selecionada
+                  </button>
+                }
+              </div>
+
+              @if (showCalendarForm()) {
+                <div class="calendar-create-section">
+                  <h5>{{ hasCalendars() ? 'Cadastrar nova agenda' : 'Cadastrar primeira agenda' }}</h5>
+                  <app-novo-calendario-form
+                    [loading]="creatingCalendar()"
+                    (submitCalendar)="onCreateCalendar($event)"
+                    (cancel)="showCalendarForm.set(false)" />
+                </div>
+              }
+
+              @if (deletingCalendar()) {
+                <p class="calendar-management-status" role="status">
+                  <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+                  Excluindo agenda...
+                </p>
+              }
+            </aside>
+          </div>
+        </ng-template>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
+</div>

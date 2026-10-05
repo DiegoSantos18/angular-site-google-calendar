@@ -118,3 +118,19 @@ app-calendar-form {
     transform: rotate(360deg);
   }
 }
+
+.full-width {
+  width: 100%;
+}
+
+.app-snackbar-success {
+  --mdc-snackbar-container-color: #137333;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snackbar-button-color: #fff;
+}
+
+.app-snackbar-error {
+  --mdc-snackbar-container-color: #b3261e;
+  --mdc-snackbar-supporting-text-color: #fff;
+  --mat-snackbar-button-color: #fff;
+}

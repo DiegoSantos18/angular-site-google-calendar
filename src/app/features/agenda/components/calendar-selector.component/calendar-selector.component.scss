@@ -1,0 +1,52 @@
+.menu-header {
+  padding: 8px 16px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--mat-sys-on-surface-variant);
+  letter-spacing: 0.5px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant, rgba(0,0,0,0.1));
+}
+
+::ng-deep .calendar-dropdown-menu .mat-mdc-menu-item {
+  position: relative;
+
+  &::before {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    background-color: var(--calendar-color, var(--mat-sys-primary));
+    content: '';
+    pointer-events: none;
+  }
+}
+
+.active-calendar {
+  font-weight: 700;
+}
+
+::ng-deep .calendar-menu-trigger-btn {
+  transition: transform 0.2s ease, background-color 0.2s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    background-color: var(--mat-sys-primary-container);
+  }
+
+  mat-icon {
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  &:hover mat-icon {
+    transform: rotate(-8deg) scale(1.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::ng-deep .calendar-menu-trigger-btn,
+  ::ng-deep .calendar-menu-trigger-btn mat-icon {
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -2,121 +2,87 @@ import * as dotenv from 'dotenv';
 
 dotenv.config();
 
-export abstract class SeedBase<T> {
-  protected apiUrl: string;
+export const SEED_EVENT_MARKER = {
+  key: 'my-agenda-seed',
+  value: 'calendar-seed-v1'
+} as const;
+
+export const SEED_CALENDAR_MARKER_PREFIX = '[my-agenda-calendar-seed:calendar-seed-v1:';
+
+export function getSeedCalendarMarker(key: string): string {
+  return `${SEED_CALENDAR_MARKER_PREFIX}${key}]`;
+}
+
+export interface SeedCalendar {
+  id: string;
+  summary?: string;
+  description?: string;
+  timeZone?: string;
+  backgroundColor?: string;
+}
+
+export interface SeedEvent {
+  id?: string;
+  summary?: string;
+  colorId?: string;
+  extendedProperties?: { private?: Record<string, string> | null } | null;
+}
+
+interface ApiError {
+  error?: string;
+}
+
+export class SeedBase {
+  protected readonly apiUrl = (process.env.API_URL_SEED || '').replace(/\/+$/, '');
 
   constructor() {
-    this.apiUrl = process.env.API_URL_SEED || '';
     if (!this.apiUrl) {
-      console.error('[X] Erro Crítico: A variável de ambiente API_URL_SEED não está definida no arquivo .env');
-      process.exit(1);
+      throw new Error('Defina API_URL_SEED no arquivo .env.');
     }
   }
 
-  protected abstract getSeedData(): T[];
-  protected abstract getEndpointPath(): string;
-  protected abstract transformItem(item: T): any;
-  protected abstract getSeederName(): string;
+  protected async request<T>(
+    action: string,
+    options: {
+      method?: 'GET' | 'POST' | 'PATCH' | 'DELETE';
+      calendarId?: string;
+      query?: Record<string, string>;
+      body?: unknown;
+    } = {}
+  ): Promise<T> {
+    const url = new URL(`${this.apiUrl}/calendar`);
+    url.searchParams.set('action', action);
+    for (const [key, value] of Object.entries(options.query ?? {})) {
+      url.searchParams.set(key, value);
+    }
 
-  /**
-   * Executa a carga (Insert / Seed)
-   */
-  public async execute(): Promise<void> {
-    const endpoint = `${this.apiUrl}${this.getEndpointPath()}`;
-    const items = this.getSeedData();
+    const headers: Record<string, string> = {};
+    const method = options.method ?? 'GET';
+    if (options.calendarId) {
+      headers['x-google-calendar-id'] = options.calendarId;
+    }
+    if (options.body !== undefined) {
+      headers['Content-Type'] = 'application/json';
+    }
+    const response = await fetch(url, {
+      method,
+      headers,
+      ...(options.body === undefined ? {} : { body: JSON.stringify(options.body) })
+    });
 
-    console.log(`\n--------------------------------------------------`);
-    console.log(`🚀 [${this.getSeederName()}] Iniciando carga (${items.length} itens)`);
-    console.log(`🔗 Endpoint: ${endpoint}`);
-    console.log(`--------------------------------------------------`);
-
-    let successCount = 0;
-    let errorCount = 0;
-
-    for (const [index, item] of items.entries()) {
-      const progress = `[${index + 1}/${items.length}]`;
-
+    if (!response.ok) {
+      const responseText = await response.text();
+      let message = responseText;
       try {
-        const payload = this.transformItem(item);
-
-        const response = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-
-        if (!response.ok) {
-          const errText = await response.text();
-          console.error(`❌ ${progress} Erro ao processar item: ${errText}`);
-          errorCount++;
-        } else {
-          console.log(`✅ ${progress} Item processado com sucesso.`);
-          successCount++;
-        }
-      } catch (error) {
-        console.error(`❌ ${progress} Falha de conexão:`, error);
-        errorCount++;
+        const error = JSON.parse(responseText) as ApiError;
+        message = error.error || responseText;
+      } catch {
+        message = responseText;
       }
+      throw new Error(`${response.status} ${response.statusText}: ${message}`);
     }
 
-    console.log(`\n📊 [${this.getSeederName()}] Resumo (Carga): ✅ Sucessos: ${successCount} | ❌ Erros: ${errorCount} | 📦 Total: ${items.length}`);
-  }
-
-  /**
-   * Executa a reversão (Delete) de forma padrão
-   */
-  public async delete(): Promise<void> {
-    console.log(`\n--------------------------------------------------`);
-    console.log(`🗑️ [${this.getSeederName()}] Iniciando exclusão/reversão...`);
-    console.log(`--------------------------------------------------`);
-
-    try {
-      const getEndpoint = `${this.apiUrl}/calendar?action=get-events`;
-      const response = await fetch(getEndpoint, { method: 'GET' });
-
-      if (!response.ok) {
-        console.error(`❌ [${this.getSeederName()}] Erro ao buscar dados para exclusão.`);
-        return;
-      }
-
-      const items: any[] = await response.json();
-
-      if (items.length === 0) {
-        console.log(`✨ [${this.getSeederName()}] Nenhum item encontrado para excluir.`);
-        return;
-      }
-
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const [index, item] of items.entries()) {
-        const progress = `[${index + 1}/${items.length}]`;
-        const itemId = item.id;
-        const label = item.summary || itemId;
-
-        if (!itemId) continue;
-
-        const deleteEndpoint = `${this.apiUrl}/calendar?action=delete-event&id=${itemId}`;
-
-        try {
-          const deleteRes = await fetch(deleteEndpoint, { method: 'DELETE' });
-
-          if (!deleteRes.ok) {
-            console.error(`❌ ${progress} Erro ao excluir "${label}"`);
-            errorCount++;
-          } else {
-            console.log(`✅ ${progress} Excluído com sucesso: "${label}"`);
-            successCount++;
-          }
-        } catch (error) {
-          console.error(`❌ ${progress} Falha de conexão ao excluir "${label}":`, error);
-          errorCount++;
-        }
-      }
-
-      console.log(`\n📊 [${this.getSeederName()}] Resumo (Exclusão): ✅ Removidos: ${successCount} | ❌ Erros: ${errorCount} | 📦 Total: ${items.length}`);
-    } catch (error) {
-      console.error(`❌ [${this.getSeederName()}] Erro crítico ao processar exclusão:`, error);
-    }
+    if (response.status === 204) return undefined as T;
+    return await response.json() as T;
   }
 }

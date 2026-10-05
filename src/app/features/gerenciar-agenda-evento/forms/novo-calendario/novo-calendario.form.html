@@ -1,0 +1,49 @@
+<form class="new-calendar-form" [formGroup]="calendarForm" (ngSubmit)="submit()">
+  <mat-form-field appearance="outline">
+    <mat-label>Nome da agenda</mat-label>
+    <input matInput formControlName="summary" maxlength="100" required>
+    @if (calendarForm.controls.summary.hasError('required')) {
+      <mat-error>Informe o nome da agenda.</mat-error>
+    } @else if (calendarForm.controls.summary.hasError('maxlength')) {
+      <mat-error>O nome deve ter até 100 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <mat-form-field appearance="outline">
+    <mat-label>Descrição (opcional)</mat-label>
+    <textarea matInput formControlName="description" maxlength="1000" rows="3"></textarea>
+    @if (calendarForm.controls.description.hasError('maxlength')) {
+      <mat-error>A descrição deve ter até 1000 caracteres.</mat-error>
+    }
+  </mat-form-field>
+
+  <fieldset class="calendar-color-field" [disabled]="loading">
+    <legend>Cor da agenda</legend>
+    <div class="calendar-color-options" role="group" aria-label="Escolher cor da agenda">
+      @for (option of calendarColors; track option.color) {
+        <button
+          type="button"
+          class="color-swatch"
+          [class.selected]="calendarForm.controls.backgroundColor.value === option.color"
+          [attr.aria-pressed]="calendarForm.controls.backgroundColor.value === option.color"
+          [attr.aria-label]="option.label + ', ' + option.color"
+          [title]="option.label"
+          [style.--swatch-color]="option.color"
+          (click)="calendarForm.controls.backgroundColor.setValue(option.color)">
+        </button>
+      }
+    </div>
+  </fieldset>
+
+  <div class="form-actions">
+    <button mat-button type="button" (click)="cancel.emit()" [disabled]="loading">
+      Cancelar
+    </button>
+    <button mat-flat-button color="primary" type="submit"
+      [disabled]="calendarForm.invalid || loading">
+      <mat-icon fontSet="fontawesome"
+        [fontIcon]="loading ? 'fa-spinner fa-spin' : 'fa-calendar-plus'" />
+      {{ loading ? 'Criando agenda...' : 'Criar agenda' }}
+    </button>
+  </div>
+</form>

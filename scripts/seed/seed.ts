@@ -13,4 +13,7 @@ async function runAllSeeds() {
   console.log('==================================================');
 }
 
-runAllSeeds();
+runAllSeeds().catch(error => {
+  console.error('Falha ao executar os dados de demonstração:', error);
+  process.exitCode = 1;
+});

@@ -1,0 +1,130 @@
+<div class="calendar-pane" [class.disabled-pane]="disabled">
+  <div class="period-header">
+    <div class="period-title-wrapper">
+      <mat-icon fontSet="fontawesome" fontIcon="fa-clock" />
+      <span>Período</span>
+    </div>
+    <button mat-button class="btn-toggle-time" type="button"
+      [disabled]="disabled"
+      (click)="$event.stopPropagation(); !disabled && toggleTimeSelection()">
+      <span class="toggle-text">{{ showTimeSelection() ? 'Ocultar Horas' : 'Definir Horas' }}</span>
+      <mat-icon>{{ showTimeSelection() ? 'expand_less' : 'expand_more' }}</mat-icon>
+    </button>
+  </div>
+
+  <mat-calendar
+    [selected]="selectedRange"
+    [startAt]="calendarHeaderDate"
+    (selectedChange)="!disabled && onSelectedChange($event)"
+    (activeDateChange)="!disabled && onActiveDateChange($any($event))"
+    [dateClass]="dateClass"
+    [dateFilter]="dateFilter">
+  </mat-calendar>
+
+  @if (showTimeSelection()) {
+    <div class="time-selection-container">
+      <div class="time-box">
+        <label>Horário de início</label>
+        <div class="time-input-wrapper">
+          <input #startTimeInput type="text" class="time-spinner-input" required
+            inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm"
+            pattern="([01][0-9]|2[0-3]):[0-5][0-9]"
+            aria-label="Horário de início no formato de 24 horas"
+            title="Horário de início (formato HH:mm)"
+            [value]="startTime"
+            [disabled]="disabled"
+            (input)="onStartTimeChange($event)" />
+          <button mat-icon-button type="button" class="time-picker-trigger"
+            [matMenuTriggerFor]="startTimeMenu"
+            (menuOpened)="scrollSelectedOption(startHoursList); scrollSelectedOption(startMinutesList)"
+            [disabled]="disabled"
+            aria-label="Abrir seletor do horário de início"
+            title="Selecionar horário de início">
+            <mat-icon aria-hidden="true">schedule</mat-icon>
+          </button>
+        </div>
+        <mat-menu #startTimeMenu="matMenu" class="time-picker-menu">
+          <div class="time-picker-popup">
+            <section class="time-picker-column" aria-label="Selecionar hora">
+              <strong>Hora</strong>
+              <div #startHoursList class="time-picker-options">
+                @for (hour of hours; track hour) {
+                  <button type="button" class="time-picker-option"
+                    [class.selected]="startTime.split(':')[0] === hour"
+                    [attr.aria-pressed]="startTime.split(':')[0] === hour"
+                    (click)="selectStartHour(hour)">
+                    {{ hour }}
+                  </button>
+                }
+              </div>
+            </section>
+            <section class="time-picker-column" aria-label="Selecionar minuto">
+              <strong>Minuto</strong>
+              <div #startMinutesList class="time-picker-options">
+                @for (minute of minutes; track minute) {
+                  <button type="button" class="time-picker-option"
+                    [class.selected]="startTime.split(':')[1] === minute"
+                    [attr.aria-pressed]="startTime.split(':')[1] === minute"
+                    (click)="selectStartMinute(minute)">
+                    {{ minute }}
+                  </button>
+                }
+              </div>
+            </section>
+          </div>
+        </mat-menu>
+      </div>
+      <div class="time-box">
+        <label>Horário de término</label>
+        <div class="time-input-wrapper">
+          <input type="text" class="time-spinner-input" required
+            inputmode="numeric" autocomplete="off" maxlength="5" placeholder="HH:mm"
+            pattern="([01][0-9]|2[0-3]):[0-5][0-9]"
+            aria-label="Horário de término no formato de 24 horas"
+            title="Horário de término (formato HH:mm)"
+            [value]="endTime"
+            [disabled]="disabled"
+            (input)="onEndTimeChange($event)" />
+          <button mat-icon-button type="button" class="time-picker-trigger"
+            [matMenuTriggerFor]="endTimeMenu"
+            (menuOpened)="scrollSelectedOption(endHoursList); scrollSelectedOption(endMinutesList)"
+            [disabled]="disabled"
+            aria-label="Abrir seletor do horário de término"
+            title="Selecionar horário de término">
+            <mat-icon aria-hidden="true">schedule</mat-icon>
+          </button>
+        </div>
+        <mat-menu #endTimeMenu="matMenu" class="time-picker-menu">
+          <div class="time-picker-popup">
+            <section class="time-picker-column" aria-label="Selecionar hora">
+              <strong>Hora</strong>
+              <div #endHoursList class="time-picker-options">
+                @for (hour of hours; track hour) {
+                  <button type="button" class="time-picker-option"
+                    [class.selected]="endTime.split(':')[0] === hour"
+                    [attr.aria-pressed]="endTime.split(':')[0] === hour"
+                    (click)="selectEndHour(hour)">
+                    {{ hour }}
+                  </button>
+                }
+              </div>
+            </section>
+            <section class="time-picker-column" aria-label="Selecionar minuto">
+              <strong>Minuto</strong>
+              <div #endMinutesList class="time-picker-options">
+                @for (minute of minutes; track minute) {
+                  <button type="button" class="time-picker-option"
+                    [class.selected]="endTime.split(':')[1] === minute"
+                    [attr.aria-pressed]="endTime.split(':')[1] === minute"
+                    (click)="selectEndMinute(minute)">
+                    {{ minute }}
+                  </button>
+                }
+              </div>
+            </section>
+          </div>
+        </mat-menu>
+      </div>
+    </div>
+  }
+</div>

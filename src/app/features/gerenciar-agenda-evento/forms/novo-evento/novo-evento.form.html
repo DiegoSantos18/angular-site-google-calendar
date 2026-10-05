@@ -1,0 +1,160 @@
+<form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+  <div class="form-layout-grid">
+    <app-calendar-picker
+      [style.--calendar-color]="getCalendarColor()"
+      [selectedRange]="selectedRange"
+      [existingEvents]="existingEvents()"
+      [calendarHeaderDate]="currentCalendarDate()"
+      [startTime]="eventForm.get('startTime')?.value"
+      [endTime]="eventForm.get('endTime')?.value"
+      [disabled]="loading()"
+      (rangeChange)="onRangeChange($event)"
+      (activeDateChange)="onActiveDateChange($event)"
+      (startTimeChange)="eventForm.get('startTime')?.setValue($event)"
+      (endTimeChange)="eventForm.get('endTime')?.setValue($event)">
+    </app-calendar-picker>
+
+    <div class="form-pane">
+      <div class="form-busy-slots-section" [class.max-height]="loading() || filteredEventsForMonth.length === 0">
+        <h4><mat-icon fontSet="fontawesome" fontIcon="fa-clock" /> Eventos Já Agendados:</h4>
+        @if (loading()) {
+          <div class="form-busy-slots-section-text">
+            <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />&nbsp;
+            A carregar disponibilidade...
+          </div>
+        } @else if (availabilityError()) {
+          <div
+            class="availability-error"
+            [class.no-calendar]="!hasCalendars"
+            [attr.role]="hasCalendars ? 'alert' : 'status'">
+            <span class="availability-error-message">{{ availabilityError() }}</span>
+            <div class="availability-error-actions">
+              <a
+                mat-icon-button
+                class="availability-action"
+                routerLink="/gerenciar-agenda"
+                [queryParams]="{ tab: 'visualizar', create: 'true' }"
+                title="Criar nova agenda"
+                matTooltip="Criar nova agenda"
+                aria-label="Criar nova agenda">
+                <mat-icon>add</mat-icon>
+              </a>
+              @if (hasCalendars) {
+                <button
+                  mat-icon-button
+                  class="availability-action"
+                  type="button"
+                  (click)="loadOccupiedSlots()"
+                  title="Tentar novamente"
+                  matTooltip="Tentar novamente"
+                  aria-label="Tentar novamente">
+                  <mat-icon>refresh</mat-icon>
+                </button>
+              }
+            </div>
+          </div>
+        } @else if (filteredEventsForMonth.length === 0) {
+          <p class="form-busy-slots-section-text">Nenhum evento agendado para este mês. Livre total!</p>
+        } @else {
+          <ul class="form-slots-list">
+            @for (ev of filteredEventsForMonth; track ev.id) {
+              <li
+                [style.--calendar-color]="getCalendarColor()"
+                [style.--event-color]="getEventColor(ev)">
+                <div class="form-event-details">
+                  <strong>{{ ev.summary }}</strong>
+                  <span>{{ formatEventDateRange(ev) }}</span>
+                  @if (ev.location) {
+                    <span class="form-event-location">
+                      <mat-icon>location_on</mat-icon> {{ ev.location }}
+                    </span>
+                  } @else {
+                    <span class="form-event-location">
+                      <mat-icon>location_on</mat-icon> Local não informado
+                    </span>
+                  }
+                </div>
+                <button
+                  mat-icon-button
+                  type="button"
+                  class="form-event-actions"
+                  [matTooltip]="'Excluir evento: ' + (ev.summary || 'sem título')"
+                  [attr.aria-label]="'Excluir evento: ' + (ev.summary || 'sem título')"
+                  [disabled]="loading()"
+                  (click)="onDeleteEvent(ev.id, ev.summary)">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </li>
+            }
+          </ul>
+        }
+      </div>
+
+      <div class="form-appointment">
+        <div class="form-selected-period-display">
+          <mat-icon fontSet="fontawesome" fontIcon="fa-calendar-check" class="prefix-icon" />
+          <span>Período: <strong>{{ formatRangeDisplay() }}</strong></span>
+        </div>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Título / Nome do Evento</mat-label>
+          <input matInput formControlName="summary" placeholder="Ex: Reunião com Cliente" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descrição</mat-label>
+          <textarea matInput formControlName="description" rows="2" placeholder="Detalhes ou pauta da reunião..."></textarea>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Localização</mat-label>
+          <input matInput formControlName="location" placeholder="Ex: Av. Paulista, 1000, São Paulo - SP" />
+          <mat-hint>Um endereço completo ou nome reconhecível ajuda o Google Calendar a localizar o lugar.</mat-hint>
+        </mat-form-field>
+
+        <fieldset class="event-color-field" [disabled]="loading()">
+          <legend>Cor do evento</legend>
+          <div class="event-color-options" role="group" aria-label="Escolher cor do evento">
+            <button
+              type="button"
+              class="event-color-swatch no-color"
+              [class.selected]="!eventForm.controls['colorId'].value"
+              [attr.aria-pressed]="!eventForm.controls['colorId'].value"
+              aria-label="Usar cor da agenda"
+              title="Usar cor da agenda"
+              (click)="eventForm.controls['colorId'].setValue('')">
+              <mat-icon>format_color_reset</mat-icon>
+            </button>
+            @for (option of eventColors; track option.colorId) {
+              <button
+                type="button"
+                class="event-color-swatch"
+                [class.selected]="eventForm.controls['colorId'].value === option.colorId"
+                [attr.aria-pressed]="eventForm.controls['colorId'].value === option.colorId"
+                [attr.aria-label]="option.label"
+                [title]="option.label"
+                [style.--swatch-color]="option.color"
+                (click)="eventForm.controls['colorId'].setValue(option.colorId)">
+              </button>
+            }
+          </div>
+        </fieldset>
+
+        <button mat-flat-button color="primary" class="form-btn-submit" type="submit" [disabled]="eventForm.invalid || loading() || availabilityError() || !selectedRange?.start">
+          @if (loading()) {
+            <span class="form-loading-content">
+              <mat-icon fontSet="fontawesome" fontIcon="fa-spinner fa-spin" />
+              <span>A processar...</span>
+            </span>
+          } @else {
+            <span class="form-submit-content">
+              <mat-icon>event_available</mat-icon>
+              <span>Confirmar Agendamento</span>
+            </span>
+          }
+        </button>
+
+      </div>
+    </div>
+  </div>
+</form>

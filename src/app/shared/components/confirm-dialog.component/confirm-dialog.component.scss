@@ -1,0 +1,15 @@
+h2[mat-dialog-title] {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--mat-sys-on-surface);
+
+  mat-icon {
+    color: var(--mat-sys-error);
+  }
+}
+
+mat-dialog-content p {
+  color: var(--mat-sys-on-surface-variant);
+  line-height: 1.5;
+}

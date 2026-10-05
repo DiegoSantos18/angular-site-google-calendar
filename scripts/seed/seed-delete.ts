@@ -9,8 +9,11 @@ async function revertAllSeeds() {
   await new CalendarSeeder().delete();
 
   console.log('\n==================================================');
-  console.log('✨ TODAS AS REVERSÕES FORAM CONCLUÍDAS!');
+  console.log('Rotina de reversão encerrada.');
   console.log('==================================================');
 }
 
-revertAllSeeds();
+revertAllSeeds().catch(error => {
+  console.error('Falha ao reverter os dados de demonstração:', error);
+  process.exitCode = 1;
+});

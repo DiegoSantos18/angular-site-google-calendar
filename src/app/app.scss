@@ -17,7 +17,7 @@
   color: var(--mat-sys-on-primary);
   padding: 1.5rem 1rem;
   text-align: center;
-  border-bottom: 4px solid #ffa800;
+  border-bottom: 4px solid var(--calendar-color, var(--mat-sys-primary));
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -75,7 +75,7 @@
   }
 
   .github-link {
-    color: #ffa800;
+    color: #fff;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -93,7 +93,7 @@
     }
 
     &:hover {
-      color: #ffc13b;
+      color: #fff;
       text-decoration: underline;
     }
   }

@@ -1,0 +1,228 @@
+.calendar-pane {
+  background: var(--mat-sys-surface-container, rgba(0, 0, 0, 0.02));
+  border-radius: 12px;
+  padding: 12px;
+  border: 1px solid var(--mat-sys-outline-variant);
+  height: fit-content;
+
+  &.disabled-pane {
+    opacity: 0.6;
+    pointer-events: none;
+    cursor: not-allowed;
+  }
+
+  mat-calendar {
+    width: 100%;
+  }
+}
+
+.period-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 4px 8px 10px 8px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  cursor: pointer;
+  user-select: none;
+
+  .period-title-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    color: var(--mat-sys-primary);
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+    }
+  }
+
+  .btn-toggle-time {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background-color 0.2s;
+
+    &:hover {
+      background-color: var(--mat-sys-surface-container-highest);
+      color: var(--mat-sys-primary);
+    }
+
+    mat-icon {
+      font-size: 0.75rem;
+      width: 0.75rem;
+      height: 0.75rem;
+    }
+  }
+}
+
+.time-selection-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--mat-sys-outline-variant);
+}
+
+.time-box {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  label {
+    font-size: 0.8rem;
+    color: var(--mat-sys-on-surface-variant);
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 500;
+
+    mat-icon {
+      font-size: 1rem;
+      width: 1rem;
+      height: 1rem;
+      color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.time-input-wrapper {
+  width: 100%;
+  position: relative;
+}
+
+.time-spinner-input {
+  width: 100%;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  text-align: left;
+  padding: 0 2.5rem 0 0.75rem;
+  color: var(--mat-sys-on-surface);
+  background-color: var(--mat-sys-surface);
+  outline: none;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  cursor: text;
+
+  &:focus {
+    border-color: var(--mat-sys-primary);
+    box-shadow: 0 0 0 2px var(--mat-sys-primary-container, rgba(0,0,0,0.1));
+  }
+}
+
+.time-picker-trigger.mat-mdc-icon-button {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  transform: translateY(-50%);
+  width: 32px;
+  height: 32px;
+  padding: 4px;
+  color: var(--mat-sys-on-surface-variant);
+  border-radius: 6px;
+}
+
+::ng-deep .time-picker-menu .mat-mdc-menu-panel {
+  max-width: none;
+}
+
+.time-picker-options {
+  width: 112px;
+  max-height: 192px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 4px;
+}
+
+.time-picker-popup {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(76px, 1fr));
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+.time-picker-column {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 6px;
+  color: var(--mat-sys-on-surface);
+  font-size: 0.8rem;
+
+  strong {
+    text-align: center;
+  }
+}
+
+.time-picker-option {
+  width: 100%;
+  min-height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--mat-sys-on-surface);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+
+  &:hover,
+  &.selected {
+    background: var(--mat-sys-primary-container);
+    color: var(--mat-sys-on-primary-container);
+  }
+}
+
+::ng-deep .mat-calendar-body-label {
+  visibility: hidden;
+}
+
+::ng-deep .mat-calendar-body-disabled.occupied-date .mat-calendar-body-cell-content {
+  background-color: color-mix(
+    in srgb,
+    var(--occupied-color, var(--calendar-color, var(--mat-sys-error))) 28%,
+    var(--mat-sys-surface)
+  );
+  color: var(--mat-sys-on-surface);
+  border: 1px dashed var(--occupied-color, var(--calendar-color, var(--mat-sys-error)));
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 4px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 6px;
+    height: 6px;
+    background-color: var(--occupied-color, var(--calendar-color, var(--mat-sys-error)));
+    border-radius: 50%;
+  }
+}
+
+::ng-deep .occupied-color-1 { --occupied-color: #a4bdfc; }
+::ng-deep .occupied-color-2 { --occupied-color: #7ae7bf; }
+::ng-deep .occupied-color-3 { --occupied-color: #dbadff; }
+::ng-deep .occupied-color-4 { --occupied-color: #ff887c; }
+::ng-deep .occupied-color-5 { --occupied-color: #fbd75b; }
+::ng-deep .occupied-color-6 { --occupied-color: #ffb878; }
+::ng-deep .occupied-color-7 { --occupied-color: #46d6db; }
+::ng-deep .occupied-color-8 { --occupied-color: #e1e1e1; }
+::ng-deep .occupied-color-9 { --occupied-color: #5484ed; }
+::ng-deep .occupied-color-10 { --occupied-color: #51b749; }
+::ng-deep .occupied-color-11 { --occupied-color: #dc2127; }

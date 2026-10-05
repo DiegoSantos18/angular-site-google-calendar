@@ -44,5 +44,6 @@ __screenshots__/
 Thumbs.db
 
 # Vercel
-.env
+/.env*
+!/.env.example
 .vercel

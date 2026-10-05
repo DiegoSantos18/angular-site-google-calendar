@@ -1,0 +1,29 @@
+<button mat-icon-button [matMenuTriggerFor]="calendarMenu"
+  [style.--calendar-color]="getCalendarColor(selectedCalendar()?.backgroundColor)"
+  [style.--calendar-tint]="getCalendarTint(selectedCalendar()?.backgroundColor)"
+  [style.color]="getCalendarColor(selectedCalendar()?.backgroundColor)"
+  [attr.aria-label]="'Selecionar agenda' + (selectedCalendar()?.summary ? ': ' + selectedCalendar()?.summary : '')"
+  title="Selecionar agenda"
+  class="calendar-menu-trigger-btn">
+  <mat-icon
+    class="agenda-icon-title link"
+    fontSet="fontawesome"
+    fontIcon="fa-calendar-days" />
+</button>
+
+<mat-menu #calendarMenu="matMenu" class="calendar-dropdown-menu">
+  <div class="menu-header">Selecionar Agenda</div>
+  @for (cal of calendars(); track cal.id) {
+    <button mat-menu-item (click)="onCalendarChange(cal.id)"
+      [class.active-calendar]="selectedId() === cal.id"
+      [style.--calendar-color]="getCalendarColor(cal.backgroundColor)"
+      [style.--calendar-tint]="getCalendarTint(cal.backgroundColor)"
+      [style.background-color]="selectedId() === cal.id ? getCalendarTint(cal.backgroundColor) : null"
+      [attr.aria-current]="selectedId() === cal.id ? 'true' : null">
+      <mat-icon [style.color]="selectedId() === cal.id ? getCalendarColor(cal.backgroundColor) : null">
+        {{ selectedId() === cal.id ? 'check_small' : '' }}
+      </mat-icon>
+      <span class="calendar-summary-text">{{ cal.summary }}</span>
+    </button>
+  }
+</mat-menu>

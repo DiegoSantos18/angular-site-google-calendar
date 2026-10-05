@@ -1,0 +1,16 @@
+[
+  {
+    "key": "technology",
+    "summary": "Tecnologia",
+    "description": "Workshops, arquitetura, desenvolvimento e engenharia de software.",
+    "timeZone": "America/Sao_Paulo",
+    "backgroundColor": "#4986e7"
+  },
+  {
+    "key": "community",
+    "summary": "Comunidade",
+    "description": "Encontros, mentorias e atividades da comunidade de tecnologia.",
+    "timeZone": "America/Sao_Paulo",
+    "backgroundColor": "#16a765"
+  }
+]

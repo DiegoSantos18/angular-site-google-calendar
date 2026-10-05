@@ -1,9 +1,16 @@
 import { Routes } from '@angular/router';
-import { AgendaComponent } from './components/agenda.component/agenda.component';
-import { CalendarForm } from './forms/calendar.form/calendar.form';
+import { AgendaPage } from './features/agenda/pages/agenda.page';
 
 export const routes: Routes = [
-  { path: '', component: AgendaComponent, data: { title: '' } },
-  { path: 'gerenciar-evento', component: CalendarForm, data: { title: 'Gerenciar Evento' } }
+  { path: '', component: AgendaPage, data: { title: '' } },
+  {
+    path: 'gerenciar-agenda',
+    loadComponent: () => import('./features/gerenciar-agenda-evento/pages/gerenciar-agenda-evento.page')
+      .then(module => module.GerenciarAgendaEventoPage),
+    data: { title: 'Gerenciar Agenda' }
+  },
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];
-
