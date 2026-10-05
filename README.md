@@ -3,6 +3,7 @@
 Plataforma pessoal moderna e modular de gestão de compromissos e agenda, desenvolvida com **Angular (Standalone Components)** no frontend e um backend serverless leve em **Node.js/TypeScript**, integrada de forma segura com a **Google Calendar API** via OAuth2.
 
 🌐 **Frontend Local:** `http://localhost:4200`
+
 🌐 **API local (handler Vercel):** `http://localhost:3000`
 
 ### Estado e documentação da API
@@ -43,15 +44,21 @@ Desenvolvido por **Diego Dos Santos**.
 ## 🛠️ Stack Tecnológica
 
 ### Frontend
+
 * **Angular (Standalone Components)** com reatividade moderna baseada em **Signals** e **RxJS** (`timer`, `switchMap`).
+
 * **SCSS** com design system limpo, responsivo e adaptado ao ecossistema Material 3.
 
 ### Backend / API (Serverless)
+
 * **Vercel Serverless Functions** (`api/calendar.ts`) em Node.js & TypeScript.
+
 * Biblioteca oficial `googleapis` para comunicação segura com o Google Calendar.
 
 ### Infraestrutura & Ferramentas
+
 * **Vercel CLI** para gestão dos ambientes e deploy da API.
+
 * **Git / GitHub** para versionamento e deploy automatizado.
 
 ---
@@ -59,22 +66,29 @@ Desenvolvido por **Diego Dos Santos**.
 ## 🏗️ Arquitetura e Decisões Técnicas
 
 ### 1. Polling Inteligente
+
 Sem a complexidade e o custo de servidores WebSocket persistentes, o projeto utiliza um polling otimizado no Angular (`timer` + `switchMap`) que sincroniza os eventos do calendário automaticamente em segundo plano.
 
 ### 2. CORS e acesso à API
+
 Para suportar a arquitetura desacoplada (frontend no GitHub Pages e backend na Vercel), o servidor configura `Access-Control-Allow-Origin` usando `ALLOWED_ORIGIN`. CORS é uma política aplicada pelos navegadores: **não autentica usuários e não bloqueia clientes HTTP diretos**.
 
 > **API pública, inclusive para escrita:** a API não exige autenticação. Qualquer pessoa que alcance os endpoints pode criar ou excluir agendas e eventos usando as credenciais Google guardadas no servidor. CORS não impede chamadas diretas. Não publique a API apontada para calendários com dados que não possam ser alterados ou apagados por terceiros.
 
 ### 3. Segurança de Credenciais
+
 As chaves sensíveis da API do Google:
+
 * `GOOGLE_CLIENT_SECRET`
+
 * `GOOGLE_REFRESH_TOKEN`
 
 **Nunca** são expostas no código do frontend. Elas residem exclusivamente no servidor e são geridas pelas **Variáveis de Ambiente da Vercel**.
+
 `GOOGLE_CLIENT_ID` identifica o cliente OAuth usado pelo backend e pelo gerador do refresh token. Não há login de usuário no app nesta versão.
 
 ### 4. Autenticação OAuth2 Automatizada
+
 O repositório conta com um script dedicado (`scripts/gerar-token.ts`) para gerar com segurança o token de acesso de longa duração (`refreshToken`) junto ao Google Cloud.
 
 ---
@@ -84,15 +98,18 @@ O repositório conta com um script dedicado (`scripts/gerar-token.ts`) para gera
 ```text
 ├── api/
 │   └── calendar.ts           # Função serverless da Vercel (Backend Google Calendar)
+│
 ├── scripts/
 │   └── gerar-token.ts        # Script auxiliar para gerar o Refresh Token OAuth2
+│
 ├── src/
 │   ├── app/
 │   │   ├── core/             # Modelos e serviços de calendário
 │   │   ├── features/         # Agenda e gestão de eventos
-│   │   └── shared/           # Componentes reutilizáveis
-│   ├── environments/         # URLs da API por ambiente
-│   └── styles.scss           # Estilos globais e tema Material
+│   │   └── shared/            # Componentes reutilizáveis
+│   ├── environments/          # URLs da API por ambiente
+│   └── styles.scss            # Estilos globais e tema Material
+│
 ├── package.json
 └── vercel.json
 ```
@@ -102,8 +119,11 @@ O repositório conta com um script dedicado (`scripts/gerar-token.ts`) para gera
 ### Requisitos
 
 * Node.js compatível com a versão instalada do Angular CLI.
+
 * npm 11 (indicado pelo campo `packageManager`).
+
 * Uma conta Google com acesso ao Google Calendar API.
+
 * A Vercel CLI é necessária para operações de deploy/ambiente na Vercel; a API local usa o adaptador incluído no projeto.
 
 Na raiz do repositório, instale as dependências:
@@ -128,72 +148,88 @@ Não versione `.env` nem qualquer variante local `.env.*`: esses arquivos podem 
 
 ### Onde configurar URLs e credenciais
 
-| Arquivo/variável | Ambiente e finalidade | Versionar? |
-|---|---|---|
-| `src/environments/environment.development.ts` → `apiUrl: '/api'` | Angular local. O proxy de `npm start` encaminha chamadas para `http://localhost:3000`. | Sim; é configuração pública sem segredo. |
-| `src/environments/environment.ts` | URL pública da API Vercel para o build Angular/GitHub Pages. | Sim; nunca colocar credenciais/tokens aqui. |
-| `.env` → `API_URL_SEED=http://localhost:3000/api` | Scripts locais `seed:data` e `seed:delete`; aponta para a API que se deseja alterar. Para executar seeds contra produção, troque conscientemente pelo endpoint `/api` da Vercel. | Não; arquivo local ignorado. |
-| Variáveis de ambiente da Vercel | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` e `ALLOWED_ORIGIN`. | Não versionar valores. Configure no painel/CLI da Vercel. |
-| `.env.example` | Modelo sem segredos para saber quais variáveis os scripts locais precisam. | Sim. Revise e substitua qualquer valor real por placeholder antes de commitar. |
+| Arquivo/variável                                                 | Ambiente e finalidade                                                                                                                                                            | Versionar?                                                                     |
+| ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `src/environments/environment.development.ts` → `apiUrl: '/api'` | Angular local. O proxy de `npm start` encaminha chamadas para `http://localhost:3000`.                                                                                           | Sim; é configuração pública sem segredo.                                       |
+| `src/environments/environment.ts`                                | URL pública da API Vercel para o build Angular/GitHub Pages.                                                                                                                     | Sim; nunca colocar credenciais/tokens aqui.                                    |
+| `.env` → `API_URL_SEED=http://localhost:3000/api`                | Scripts locais `seed:data` e `seed:delete`; aponta para a API que se deseja alterar. Para executar seeds contra produção, troque conscientemente pelo endpoint `/api` da Vercel. | Não; arquivo local ignorado.                                                   |
+| Variáveis de ambiente da Vercel                                  | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` e `ALLOWED_ORIGIN`.                                                                                           | Não versionar valores. Configure no painel/CLI da Vercel.                      |
+| `.env.example`                                                   | Modelo sem segredos para saber quais variáveis os scripts locais precisam.                                                                                                       | Sim. Revise e substitua qualquer valor real por placeholder antes de commitar. |
 
 `API_URL_SEED` não é a URL que usa o frontend: ela só é lida pelos scripts de seed. Ela não precisa ser configurada na Vercel para publicar a API. A URL de produção do frontend é `apiUrl` em `environment.ts`; como o bundle Angular é público, o domínio Vercel não é segredo. Não colocar `GOOGLE_CLIENT_SECRET` ou refresh token nos environments Angular.
 
 Os scripts `env:pull:dev`, `env:pull:preview` e `env:pull:prod` baixam variáveis da Vercel para `.env`. Use-os somente quando quiser atualizar a configuração local e nunca adicione o arquivo resultante ao Git. Depois de baixar variáveis de produção, confira `ALLOWED_ORIGIN` e `API_URL_SEED` antes de rodar localmente: para desenvolvimento, use `http://localhost:4200` e `http://localhost:3000/api`, respectivamente.
 
-### Credenciais do Google Calendar
+---
+
+## 🔑 Credenciais do Google Calendar
 
 1. No Google Cloud Console, selecione ou crie um projeto e habilite **Google Calendar API**.
+
 2. Configure a tela de consentimento OAuth e adicione sua conta como usuário de teste, se o app estiver em modo de teste.
+
 3. Mantenha o cliente OAuth que emite o refresh token (`GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET`). O app não usa login de usuário nesta versão.
+
 4. No cliente OAuth do tipo **Aplicativo da Web**, adicione `http://localhost:3001/oauth2callback` em **URIs de redirecionamento autorizadas**. O valor deve corresponder exatamente ao `OAUTH_REDIRECT_URI` do `.env`, incluindo protocolo, porta e caminho, sem barra final. A tela `redirect_uri_mismatch` significa que a URI enviada não está cadastrada nesse cliente OAuth.
+
 5. Execute:
 
-   ```powershell
-   npm run auth:generate
-   ```
+```powershell
+npm run auth:generate
+```
 
 6. Autorize o acesso no navegador. O script recebe o callback local na porta **3001** (a API continua na porta **3000**) e imprime o refresh token. Copie-o para `GOOGLE_REFRESH_TOKEN`.
 
 Se usar outro redirect URI local, defina `OAUTH_REDIRECT_URI` no `.env` e cadastre exatamente o mesmo valor no Google Cloud Console. O endereço deve usar HTTP e `localhost`, `127.0.0.1` ou `::1`. O script imprime a URI que precisa estar cadastrada; se a porta estiver ocupada, encerra com instruções para liberá-la ou escolher outra porta.
+
 Se não receber o callback dentro de `OAUTH_CALLBACK_TIMEOUT_MS` (5 minutos por padrão), o erro inclui a URI exata e os passos para resolver `redirect_uri_mismatch`. Isso evita aguardar sem orientação quando a página do Google rejeita a solicitação.
 
-#### Alternativa: OAuth 2.0 Playground
+### Alternativa: OAuth 2.0 Playground
 
 Use esta alternativa somente se o fluxo local não concluir a autenticação. O Playground é uma ferramenta oficial do Google, mas o refresh token continua sendo um segredo e deve ser guardado apenas no `.env`/variáveis da Vercel.
 
 1. No cliente OAuth do Google Cloud, adicione `https://developers.google.com/oauthplayground` às URIs de redirecionamento autorizadas.
+
 2. Abra o [OAuth 2.0 Playground](https://developers.google.com/oauthplayground), selecione a engrenagem e habilite **Use your own OAuth credentials**.
+
 3. Informe o mesmo `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` do `.env`.
+
 4. Na etapa 1, informe o escopo `https://www.googleapis.com/auth/calendar`, autorize e conclua o consentimento com a conta que possui os calendários.
+
 5. Na etapa 2, troque o código por tokens e copie o `refresh_token` da resposta para `GOOGLE_REFRESH_TOKEN`.
+
 6. Reinicie a API local e confirme `status: "ok"` em `/api/calendar?action=health`; depois teste a listagem de calendários no app.
 
 Se a resposta não trouxer `refresh_token`, revogue o acesso concedido ao cliente OAuth na conta Google e repita o consentimento com acesso offline. Nunca publique tokens, segredos ou a resposta completa do Playground.
 
-### Variáveis de ambiente
+---
 
-| Variável | Uso |
-|---|---|
-| `GOOGLE_CLIENT_ID` | Identifica o cliente OAuth no backend e no gerador de token. |
-| `GOOGLE_CLIENT_SECRET` | Segredo OAuth; somente API/scripts locais, nunca no Angular. |
-| `GOOGLE_REFRESH_TOKEN` | Token de longa duração usado pela API para acessar o Calendar. |
-| `ALLOWED_ORIGIN` | Origem autorizada por CORS, sem caminho. Local: `http://localhost:4200`; Vercel: `https://diegosantos18.github.io`. |
-| `OAUTH_REDIRECT_URI` | Callback local do script `auth:generate`; padrão `http://localhost:3001/oauth2callback`. |
-| `OAUTH_CALLBACK_TIMEOUT_MS` | Tempo máximo de espera pelo callback OAuth em milissegundos; padrão `300000` (5 minutos). |
-| `API_URL_SEED` | Base da API para scripts de seed, por exemplo `http://localhost:3000/api`. |
+## 🔐 Variáveis de ambiente
+
+| Variável                           | Uso                                                                                                                                     |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLIENT_ID`                 | Identifica o cliente OAuth no backend e no gerador de token.                                                                            |
+| `GOOGLE_CLIENT_SECRET`             | Segredo OAuth; somente API/scripts locais, nunca no Angular.                                                                            |
+| `GOOGLE_REFRESH_TOKEN`             | Token de longa duração usado pela API para acessar o Calendar.                                                                          |
+| `ALLOWED_ORIGIN`                   | Origem autorizada por CORS, sem caminho. Local: `http://localhost:4200`; Vercel: `https://diegosantos18.github.io`.                     |
+| `OAUTH_REDIRECT_URI`               | Callback local do script `auth:generate`; padrão `http://localhost:3001/oauth2callback`.                                                |
+| `OAUTH_CALLBACK_TIMEOUT_MS`        | Tempo máximo de espera pelo callback OAuth em milissegundos; padrão `300000` (5 minutos).                                               |
+| `API_URL_SEED`                     | Base da API para scripts de seed, por exemplo `http://localhost:3000/api`.                                                              |
 | `CONFIRM_SEED_DELETE_CALENDAR_IDS` | Confirmação não interativa opcional para `seed:delete`; informe os IDs dos calendários seed em ordem alfabética, separados por vírgula. |
+
+---
 
 ## 💻 Execução local
 
 Execute os processos em terminais separados. O servidor Angular não usa a porta da API.
 
-**Terminal 1 — handler da API Vercel em `http://localhost:3000`:**
+### Terminal 1 — handler da API Vercel em `http://localhost:3000`
 
 ```powershell
 npm run api:dev
 ```
 
-**Terminal 2 — Angular em `http://localhost:4200`:**
+### Terminal 2 — Angular em `http://localhost:4200`
 
 ```powershell
 npm start
@@ -204,9 +240,56 @@ npm start
 Com a API iniciada, abra:
 
 * Aplicação: `http://localhost:4200`
+
 * Documentação Swagger e indicador de funcionamento: `http://localhost:3000/` (ou `http://localhost:3000/api/docs`)
+
 * Especificação OpenAPI: `http://localhost:3000/api/openapi`
+
 * Estado em JSON: `http://localhost:3000/api/calendar?action=health`
+
+---
+
+## 🧰 Comandos disponíveis
+
+Os principais scripts do projeto estão organizados conforme a finalidade.
+
+### 💻 Ambiente de Desenvolvimento (Local)
+
+| Comando              | Finalidade                                                                                                |
+| -------------------- | --------------------------------------------------------------------------------------------------------- |
+| `npm start`          | Inicia o servidor de desenvolvimento do Angular na porta `4200`, aplicando o proxy configurado.           |
+| `npm run watch`      | Compila o Angular automaticamente em segundo plano sempre que algum ficheiro é alterado, em modo watch.   |
+| `npm run api:dev`    | Inicia a API localmente utilizando o adaptador Node/`tsx`.                                                |
+| `npm run vercel:dev` | Alias para iniciar a API localmente, utilizando o ambiente de desenvolvimento da Vercel quando aplicável. |
+
+### 🚀 Produção & Deploy
+
+| Comando                         | Finalidade                                                                     |
+| ------------------------------- | ------------------------------------------------------------------------------ |
+| `npm run build`                 | Compila o projeto Angular para produção.                                       |
+| `npm run deploy:angular:prod`   | Envia o frontend compilado diretamente para o GitHub Pages.                    |
+| `npm run deploy:vercel:prod`    | Faz o deploy oficial do backend diretamente para a Vercel em modo de Produção. |
+| `npm run deploy:vercel:preview` | Faz um deploy temporário de teste (Preview) na Vercel.                         |
+
+### 🛠️ Utilitários & Base de Dados
+
+| Comando                 | Finalidade                                                                  |
+| ----------------------- | --------------------------------------------------------------------------- |
+| `npm run test`          | Executa os testes unitários do Angular.                                     |
+| `npm run auth:generate` | Executa o script para gerar/atualizar o token de autenticação do Google.    |
+| `npm run seed:data`     | Insere os dados iniciais (seeds) na base de dados/calendários configurados. |
+| `npm run seed:delete`   | Limpa os dados de demonstração identificados pelos marcadores de seed.      |
+
+### ☁️ Gestão de Variáveis (Vercel)
+
+| Comando                    | Finalidade                                                                                      |
+| -------------------------- | ----------------------------------------------------------------------------------------------- |
+| `npm run env:pull:dev`     | Descarrega as variáveis de ambiente de desenvolvimento da Vercel para um ficheiro `.env` local. |
+| `npm run env:pull:preview` | Descarrega as variáveis de ambiente de preview da Vercel para o `.env` local.                   |
+| `npm run env:pull:prod`    | Descarrega as variáveis de ambiente de produção da Vercel para o `.env` local.                  |
+| `npm run env:push`         | Adiciona uma nova variável de ambiente à Vercel diretamente pela linha de comandos.             |
+
+> **Atenção:** os comandos `env:pull:*` podem trazer segredos para o `.env` local. Nunca versione o arquivo `.env` ou suas variantes.
 
 Na documentação Swagger, execute primeiro a listagem de calendários, copie um ID não principal e informe-o no campo `x-google-calendar-id` para as operações de eventos. A paginação aceita `skip` de `0` a `2499` e `take` de `1` a `2500`, com `skip + take` limitado a `2500`. Eventos com rótulos de cor modernos incluem também `eventColor` hexadecimal resolvida pelo backend; `colorId` continua disponível para eventos com a paleta legada. As operações de criação e exclusão não têm autenticação de usuário atualmente; CORS, o cabeçalho do calendário e a documentação Swagger não restringem clientes HTTP diretos.
 
@@ -216,16 +299,27 @@ O endpoint `health` retorna `status: "ok"` somente quando as três credenciais G
 
 Esse erro significa que o frontend não alcançou o servidor da API. Inicie `npm run api:dev` no primeiro terminal, mantenha-o em execução e confirme que a documentação abre em `http://localhost:3000/`. Se a API já estiver no ar, o script informa que está reutilizando a instância. Iniciar apenas `npm start` não inicia a API.
 
+---
+
 ## 🧭 Calendários e eventos
 
 * A API e o seletor removem calendários marcados como principais. Não há fallback para `primary`.
+
 * Na primeira execução (ou se o calendário salvo deixou de existir), o primeiro calendário não principal retornado pela Google Calendar API é selecionado e salvo no `localStorage`.
+
 * A criação de uma agenda não exige um calendário selecionado. Na aba **Visualizar Agenda**, o painel ao lado do iframe permite trocar a agenda, cadastrar outra ou excluir a selecionada.
+
 * A exclusão de uma agenda é permanente e remove também todos os eventos dela; a interface sempre pede confirmação. Listagem de eventos, criação e exclusão de eventos, assim como exclusão de agenda, exigem o ID de um calendário não principal no cabeçalho `x-google-calendar-id`.
+
 * Criação e exclusão são públicas nesta versão e não exigem login. A confirmação de exclusão evita cliques acidentais, mas não protege a API de chamadas diretas.
+
 * O seletor, a borda dos cards e o acento do cabeçalho usam `backgroundColor` do calendário. No cadastro, é possível escolher uma das 24 cores da paleta Google para agendas e uma das 11 cores para eventos; o evento pode herdar visualmente a cor da agenda. O fundo dos cards mistura a cor do evento (rótulos modernos e `colorId` legado) com a superfície Material.
+
 * Se a lista não tiver calendários não principais, a aplicação não escolhe o principal automaticamente. Em **Gerenciar Agenda → Visualizar Agenda**, use **Cadastrar agenda** para criar uma; após o cadastro, ela é selecionada e exibida automaticamente.
+
 * Datas são exibidas em `pt-BR` e horários usam sempre o padrão de 24 horas `HH:mm`; os campos aceitam horas de `00:00` a `23:59`.
+
+---
 
 ## 🌱 Dados de demonstração
 
@@ -243,10 +337,25 @@ npm run seed:delete
 
 Para execução automatizada, defina `CONFIRM_SEED_DELETE_CALENDAR_IDS` com os IDs exibidos pelo comando, em ordem alfabética e separados por vírgula. Se houver falhas parciais, o script informa a contagem e termina com código de saída diferente de zero; eventos sem marcador (incluindo seeds antigos) devem ser removidos manualmente, após conferência.
 
+---
+
 ## 🧪 Testes e build
+
+Para executar os testes unitários:
+
+```powershell
+npm run test
+```
+
+Para executar os testes sem permanecer em modo watch:
 
 ```powershell
 npm test -- --watch=false
+```
+
+Para compilar o projeto para produção:
+
+```powershell
 npm run build
 ```
 
@@ -258,14 +367,33 @@ npm run watch
 
 O build Angular é emitido em `dist/meu-site/browser`.
 
+---
+
 ## ☁️ Deploy
 
 ### API na Vercel
 
 1. Vincule o repositório a um projeto Vercel com a raiz do projeto na raiz do repositório.
+
 2. Configure `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`, `GOOGLE_REFRESH_TOKEN` e `ALLOWED_ORIGIN` nas variáveis de ambiente da Vercel. Para este repositório, a origem do GitHub Pages é `https://diegosantos18.github.io` (sem o caminho `/angular-site-google-calendar/`).
+
 3. Use `angular-site-google-calendar` como nome sugerido do projeto Vercel para obter `https://angular-site-google-calendar.vercel.app`. Faça deploy e teste `https://angular-site-google-calendar.vercel.app/`, `/api/openapi` e `/api/calendar?action=health`. Se a Vercel atribuir outro domínio, use esse domínio real nos passos seguintes.
+
 4. Confira/versione `apiUrl` em `src/environments/environment.ts` como `https://angular-site-google-calendar.vercel.app/api` (ou o domínio efetivamente atribuído) antes de compilar a versão de produção. **Nunca publique `localhost:3000` no bundle do GitHub Pages.**
+
+O deploy de produção pode ser realizado diretamente com:
+
+```powershell
+npm run deploy:vercel:prod
+```
+
+Para gerar um deploy temporário de validação:
+
+```powershell
+npm run deploy:vercel:preview
+```
+
+---
 
 ### Angular no GitHub Pages
 
@@ -277,10 +405,20 @@ npm run build -- --configuration production --base-href=/angular-site-google-cal
 
 Publique o conteúdo de `dist/meu-site/browser` no GitHub Pages (a origem configurada em **Settings → Pages** precisa apontar para o artefato/branch publicado). A configuração atual do repositório não inclui um workflow automático de publicação do Pages. Como o app usa rotas Angular sem `#`, configure também um fallback SPA no host para recarregar diretamente `/gerenciar-agenda`.
 
+O frontend compilado pode ser publicado através do script:
+
+```powershell
+npm run deploy:angular:prod
+```
+
 Depois do deploy, confirme que:
 
 * `apiUrl` aponta para o domínio Vercel, não para `localhost`.
+
 * `ALLOWED_ORIGIN` corresponde exatamente à origem pública do GitHub Pages.
+
 * `health` informa `credentialsConfigured: true`.
+
 * O seletor lista somente calendários não principais e seleciona o primeiro se ainda não houver uma escolha válida.
+
 * O endpoint `.../api/calendar?action=health` indica `ok`.
