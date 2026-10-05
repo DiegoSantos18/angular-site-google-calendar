@@ -3,8 +3,10 @@
 Plataforma pessoal moderna e modular de gestão de compromissos e agenda, desenvolvida com **Angular (Standalone Components)** no frontend e um backend serverless leve em **Node.js/TypeScript**, integrada de forma segura com a **Google Calendar API** via OAuth2.
 
 🌐 **Frontend Local:** `http://localhost:4200`
+🔥 **Frontend PROD:** `https://diegosantos18.github.io/angular-site-google-calendar`
 
 🌐 **API local (handler Vercel):** `http://localhost:3000`
+🔥 **API PROD (handler Vercel):** `https://angular-site-google-calendar.vercel.app`
 
 ### Estado e documentação da API
 
