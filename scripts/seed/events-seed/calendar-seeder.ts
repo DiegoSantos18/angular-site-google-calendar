@@ -1,5 +1,6 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { createInterface } from 'node:readline/promises';
 import {
   getSeedCalendarMarker,
@@ -171,6 +172,17 @@ export class CalendarSeeder extends SeedBase {
             console.error(`❌ Falha ao excluir "${event.summary || event.id}":`, error);
           }
         }
+
+        try {
+          await this.request('delete-calendar', {
+            method: 'DELETE',
+            calendarId: calendar.id
+          });
+          console.log(`🗑️️ Calendário "${calendar.summary}" excluído com sucesso.`);
+        } catch (error) {
+          failed++;
+          console.error(`❌ Falha ao excluir o calendário "${calendar.summary}":`, error);
+        }
       } catch (error) {
         failed++;
         console.error(`❌ Não foi possível listar os eventos de "${calendar.summary}":`, error);
@@ -216,7 +228,7 @@ export class CalendarSeeder extends SeedBase {
   private async confirmSeedDeletion(calendars: SeedCalendar[]): Promise<boolean> {
     const confirmationValue = process.env.CONFIRM_SEED_DELETE;
 
-    console.warn('A reversão removerá somente eventos seed marcados nos calendários:');
+    console.warn('A reversão removerá somente eventos e calendários seed marcados nos calendários:');
     for (const calendar of calendars) {
       console.warn(`- ${calendar.summary || calendar.id}: ${calendar.id}`);
     }
@@ -244,6 +256,8 @@ export class CalendarSeeder extends SeedBase {
   }
 
   private readFile<T>(fileName: string): T {
+    const __filename = fileURLToPath(import.meta.url);
+    const __dirname = path.dirname(__filename);
     const filePath = path.join(__dirname, fileName);
     return JSON.parse(fs.readFileSync(filePath, 'utf-8')) as T;
   }
