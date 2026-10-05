@@ -13,52 +13,28 @@ Com a API local em execução, abra `http://localhost:3000/` para ver a document
 
 ### Algumas Telas
 
-<div style="display: flex; gap: 20px; overflow-x: auto; padding: 8px 4px 18px; scrollbar-width: thin; scroll-snap-type: x mandatory;">
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/upcoming-events-cards.png" alt="Próximos eventos — cards" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Próximos Eventos — Cards</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/upcoming-events-empty.png" alt="Próximos eventos — estado vazio" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Próximos Eventos — Estado Vazio</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/manage-calendar-event-scheduled.png" alt="Gerenciar agenda — novo evento com eventos agendados" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Novo Evento — Eventos Agendados</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/manage-calendar-event-empty.png" alt="Gerenciar agenda — novo evento sem eventos agendados" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Novo Evento — Sem Eventos Agendados</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/manage-calendar-view-calendars.png" alt="Gerenciar agenda — visualizar agendas" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Visualizar Agendas</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/manage-calendar-view-empty.png" alt="Gerenciar agenda — visualizar sem agendas" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Visualizar Agenda — Sem Agendas</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/google-calendar.png" alt="Agenda integrada do Google Calendar" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Google Calendar Integrado</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/swagger-ui.png" alt="Documentação interativa Swagger UI" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Swagger UI</figcaption>
-  </figure>
-
-  <figure style="flex: 0 0 400px; margin: 0; text-align: center; scroll-snap-align: start;">
-    <img src=".ideas/readme/swagger-ui-vercel-endpoints.png" alt="Endpoints Swagger UI na Vercel" width="400" style="display: block; max-width: 100%; height: auto; border: 1px solid #ddd; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.12);" />
-    <figcaption style="margin-top: 10px; font-weight: 600; font-size: 14px;">Swagger UI — Endpoints na Vercel</figcaption>
-  </figure>
-</div>
+<table>
+  <tr>
+    <td align="center" valign="top"><a href=".ideas/readme/upcoming-events-cards.png"><img src=".ideas/readme/upcoming-events-cards.png" alt="Próximos eventos — cards" width="480"></a><br><strong>Próximos Eventos — Cards</strong></td>
+    <td align="center" valign="top"><a href=".ideas/readme/upcoming-events-empty.png"><img src=".ideas/readme/upcoming-events-empty.png" alt="Próximos eventos — estado vazio" width="480"></a><br><strong>Próximos Eventos — Estado Vazio</strong></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><a href=".ideas/readme/manage-calendar-event-scheduled.png"><img src=".ideas/readme/manage-calendar-event-scheduled.png" alt="Gerenciar agenda — novo evento com eventos agendados" width="480"></a><br><strong>Novo Evento — Eventos Agendados</strong></td>
+    <td align="center" valign="top"><a href=".ideas/readme/manage-calendar-event-empty.png"><img src=".ideas/readme/manage-calendar-event-empty.png" alt="Gerenciar agenda — novo evento sem eventos agendados" width="480"></a><br><strong>Novo Evento — Sem Eventos Agendados</strong></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><a href=".ideas/readme/manage-calendar-view-calendars.png"><img src=".ideas/readme/manage-calendar-view-calendars.png" alt="Gerenciar agenda — visualizar agendas" width="480"></a><br><strong>Visualizar Agendas</strong></td>
+    <td align="center" valign="top"><a href=".ideas/readme/manage-calendar-view-empty.png"><img src=".ideas/readme/manage-calendar-view-empty.png" alt="Gerenciar agenda — visualizar sem agendas" width="480"></a><br><strong>Visualizar Agenda — Sem Agendas</strong></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><a href=".ideas/readme/google-calendar.png"><img src=".ideas/readme/google-calendar.png" alt="Agenda integrada do Google Calendar" width="480"></a><br><strong>Google Calendar Integrado</strong></td>
+    <td align="center" valign="top"><a href=".ideas/readme/swagger-ui.png"><img src=".ideas/readme/swagger-ui.png" alt="Documentação interativa Swagger UI" width="480"></a><br><strong>Swagger UI</strong></td>
+  </tr>
+  <tr>
+    <td align="center" valign="top"><a href=".ideas/readme/swagger-ui-vercel-endpoints.png"><img src=".ideas/readme/swagger-ui-vercel-endpoints.png" alt="Endpoints Swagger UI na Vercel" width="480"></a><br><strong>Swagger UI — Endpoints na Vercel</strong></td>
+    <td></td>
+  </tr>
+</table>
 
 ---
 
