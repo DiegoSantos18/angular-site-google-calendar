@@ -124,12 +124,16 @@ app-calendar-form {
 }
 
 .app-snackbar-success {
+  background-color: #137333;
+  color: fff;
   --mdc-snackbar-container-color: #137333;
   --mdc-snackbar-supporting-text-color: #fff;
   --mat-snackbar-button-color: #fff;
 }
 
 .app-snackbar-error {
+  background-color: #b3261e;
+  color: fff;
   --mdc-snackbar-container-color: #b3261e;
   --mdc-snackbar-supporting-text-color: #fff;
   --mat-snackbar-button-color: #fff;
