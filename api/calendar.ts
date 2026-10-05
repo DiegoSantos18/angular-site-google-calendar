@@ -255,6 +255,17 @@ async function createCalendar(
       return res.status(502).json({ error: 'O Google Calendar não retornou o ID da agenda criada.' });
     }
 
+    // Adicionar permissão pública de leitura (ACL) para o iframe
+    await calendar.acl.insert({
+      calendarId: response.data.id,
+      requestBody: {
+        role: 'reader',
+        scope: {
+          type: 'default'
+        }
+      }
+    });
+
     if (typeof backgroundColor === 'string') {
       const calendarListEntry = await calendar.calendarList.patch({
         calendarId: response.data.id,
