@@ -214,8 +214,7 @@ export class CalendarSeeder extends SeedBase {
   }
 
   private async confirmSeedDeletion(calendars: SeedCalendar[]): Promise<boolean> {
-    const calendarIds = calendars.map(calendar => calendar.id).sort();
-    const confirmationValue = process.env.CONFIRM_SEED_DELETE_CALENDAR_IDS;
+    const confirmationValue = process.env.CONFIRM_SEED_DELETE;
 
     console.warn('A reversão removerá somente eventos seed marcados nos calendários:');
     for (const calendar of calendars) {
@@ -223,26 +222,22 @@ export class CalendarSeeder extends SeedBase {
     }
 
     if (confirmationValue !== undefined) {
-      if (confirmationValue !== calendarIds.join(',')) {
-        throw new Error(
-          'CONFIRM_SEED_DELETE_CALENDAR_IDS deve corresponder exatamente à lista ordenada de IDs exibida.'
-        );
-      }
-      return true;
+      return confirmationValue === 'true' || confirmationValue === 'y';
     }
 
     if (!process.stdin.isTTY || !process.stdout.isTTY) {
       throw new Error(
-        'A exclusão exige confirmação interativa. Para automação, defina CONFIRM_SEED_DELETE_CALENDAR_IDS com os IDs exibidos, em ordem alfabética e separados por vírgula.'
+        'A exclusão exige confirmação interativa. Para automação, defina CONFIRM_SEED_DELETE=true.'
       );
     }
 
     const terminal = createInterface({ input: process.stdin, output: process.stdout });
     try {
       const answer = await terminal.question(
-        'Para confirmar, digite exatamente os IDs acima em ordem alfabética, separados por vírgula: '
+        'Tem certeza de que deseja excluir os eventos seed dos calendários acima? (y/N): '
       );
-      return answer === calendarIds.join(',');
+      const normalized = answer.trim().toLowerCase();
+      return normalized === 'y' || normalized === 'yes' || normalized === 's' || normalized === 'sim';
     } finally {
       terminal.close();
     }
