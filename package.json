@@ -11,7 +11,7 @@
     "vercel:dev": "npm run api:dev",
 
     "build": "ng build",
-    "deploy:angular:prod": "ng deploy --base-href=https://github.com/DiegoSantos18/angular-site-google-calendar/",
+    "deploy:angular:prod": "ng deploy --base-href=https://DiegoSantos18.github.io/angular-site-google-calendar/",
     "deploy:vercel:prod": "vercel --prod",
     "deploy:vercel:preview": "vercel",
 
