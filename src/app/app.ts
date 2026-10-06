@@ -62,7 +62,6 @@ export class App implements OnInit {
   async inicializarCalendarios() {
     try {
       const calendars = await firstValueFrom(this.calendarService.getCalendars());
-
       this.calendarState.setCalendars(calendars);
     } catch (err) {
       console.error('Erro ao inicializar calendários:', err);

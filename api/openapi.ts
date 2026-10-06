@@ -86,7 +86,7 @@ const specification = {
         operationId: 'createCalendarOrEvent',
         summary: 'Criar agenda ou evento',
         description: [
-          'Use `action=create-calendar` para criar uma agenda, `action=add-calendar` para criar/reutilizar agendas de seed, ou `action=add-event` para criar um evento.',
+          'Use `action=create-calendar` para criar uma agenda, ou `action=add-event` para criar um evento.',
           'A criação de agenda não exige `x-google-calendar-id`; criação de evento exige um ID não principal.',
           'Esta operação é pública e não exige autenticação. Qualquer pessoa pode criar agendas e eventos usando as credenciais do servidor.'
         ].join('\n\n'),
@@ -95,7 +95,7 @@ const specification = {
             name: 'action',
             in: 'query',
             required: true,
-            schema: { type: 'string', enum: ['create-calendar', 'add-calendar', 'add-event'] }
+            schema: { type: 'string', enum: ['create-calendar', 'add-event'] }
           },
           {
             name: 'x-google-calendar-id',

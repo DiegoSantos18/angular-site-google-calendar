@@ -211,7 +211,7 @@ export class CalendarSeeder extends SeedBase {
         );
       }
 
-      const calendar = matches[0] ?? await this.request<SeedCalendar>('add-calendar', {
+      const calendar = matches[0] ?? await this.request<SeedCalendar>('create-calendar', {
         method: 'POST',
         body: {
           ...definition,

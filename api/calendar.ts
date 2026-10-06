@@ -33,7 +33,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   if (
     action !== 'get-calendars' &&
     action !== 'create-calendar' &&
-    action !== 'add-calendar' &&
     (!calendarId || calendarId === 'primary')
   ) {
     return res.status(400).json({ error: 'Selecione um calendário disponível diferente do principal.' });
@@ -133,8 +132,6 @@ async function postMethods(
   switch (action) {
     case 'create-calendar':
       return await createCalendar(req, res, calendar);
-    case 'add-calendar':
-      return await addCalendar(req, res, calendar);
     case 'add-event':
       if (!calendarId || calendarId === 'primary') {
         return res.status(400).json({ error: 'Selecione um calendário disponível diferente do principal.' });
@@ -269,6 +266,7 @@ async function createCalendar(
     if (typeof backgroundColor === 'string') {
       const calendarListEntry = await calendar.calendarList.patch({
         calendarId: response.data.id,
+        colorRgbFormat: true,
         requestBody: { backgroundColor }
       });
       return res.status(201).json({
@@ -311,77 +309,6 @@ async function getCalendars(
   }
 }
 // Fim Google Calendar - Calendars
-
-async function addCalendar(
-  req: VercelRequest,
-  res: VercelResponse,
-  calendar: calendar_v3.Calendar
-) {
-  try {
-    const { key, summary, description, timeZone, backgroundColor } = req.body ?? {};
-    const markerMatch = typeof description === 'string'
-      ? /\[my-agenda-calendar-seed:calendar-seed-v1:(technology|community)\]/.exec(description)
-      : undefined;
-    if (
-      typeof summary !== 'string' ||
-      !summary.trim() ||
-      typeof description !== 'string' ||
-      !description.trim() ||
-      !markerMatch ||
-      key !== markerMatch[1] ||
-      typeof timeZone !== 'string' ||
-      !timeZone.trim() ||
-      typeof backgroundColor !== 'string' ||
-      !/^#[\da-f]{6}$/i.test(backgroundColor)
-    ) {
-      return res.status(400).json({
-        error: 'Informe uma chave seed válida, summary, description, timeZone e uma backgroundColor hexadecimal válida.'
-      });
-    }
-
-    const marker = markerMatch[0];
-    const calendarList = await calendar.calendarList.list();
-    const matchingCalendars = (calendarList.data.items ?? []).filter(entry =>
-      entry.description?.includes(marker)
-    );
-    if (matchingCalendars.length > 1) {
-      return res.status(409).json({
-        error: 'Há calendários duplicados para esta chave de seed. Resolva as duplicatas antes de executar novamente.'
-      });
-    }
-
-    const existingCalendar = matchingCalendars[0];
-    const response = existingCalendar?.id
-      ? await calendar.calendars.get({ calendarId: existingCalendar.id })
-      : await calendar.calendars.insert({
-          requestBody: {
-            summary: summary.trim(),
-            description: description.trim(),
-            timeZone: timeZone.trim()
-          }
-        });
-    const createdCalendar = response.data;
-    if (!createdCalendar.id) {
-      return res.status(502).json({ error: 'O Google Calendar não retornou o ID da agenda criada.' });
-    }
-
-    await calendar.calendarList.patch({
-      calendarId: createdCalendar.id,
-      requestBody: { backgroundColor }
-    });
-
-    return res.status(existingCalendar ? 200 : 201).json({
-      id: createdCalendar.id,
-      summary: createdCalendar.summary,
-      description: createdCalendar.description,
-      timeZone: createdCalendar.timeZone,
-      backgroundColor
-    });
-  } catch (error) {
-    console.error('Erro ao criar calendário:', error);
-    return res.status(500).json({ error: 'Erro interno ao criar o calendário.' });
-  }
-}
 
 // Google Calendar - Events
 async function getEvents(
