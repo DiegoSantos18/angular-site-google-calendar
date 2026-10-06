@@ -123,25 +123,16 @@ app-calendar-form {
   width: 100%;
 }
 
-.app-snackbar-success {
+.app-snackbar-success.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  --mdc-snackbar-container-color: #137333 !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
   background-color: #137333 !important;
-  color: #fff !important;
-  --mdc-snackbar-container-color: #137333;
-  --mdc-snackbar-supporting-text-color: #fff;
-  --mat-snackbar-button-color: #fff;
+  color: #ffffff !important;
 }
 
-.app-snackbar-error {
+.app-snackbar-error.mat-mdc-snack-bar-container .mat-mdc-snackbar-surface {
+  --mdc-snackbar-container-color: #b3261e !important;
+  --mdc-snackbar-supporting-text-color: #ffffff !important;
   background-color: #b3261e !important;
-  color: #fff !important;
-  --mdc-snackbar-container-color: #b3261e;
-  --mdc-snackbar-supporting-text-color: #fff;
-  --mat-snackbar-button-color: #fff;
-}
-
-.cdk-global-overlay-wrapper:has(.mat-mdc-snack-bar-container) {
-  justify-content: flex-end !important;
-  align-items: flex-end !important;
-  padding: 16px;
-  box-sizing: border-box;
+  color: #ffffff !important;
 }
