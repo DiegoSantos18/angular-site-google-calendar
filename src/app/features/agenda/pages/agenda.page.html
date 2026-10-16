@@ -18,7 +18,7 @@
 
     <button mat-flat-button color="primary" class="btn-open-modal" routerLink="/gerenciar-agenda">
       <mat-icon>edit_calendar</mat-icon>
-      Gerenciar Agenda
+      <span>Gerenciar Agenda</span>
     </button>
   </div>
 
@@ -102,12 +102,14 @@
   @else if (!loading && eventos.length === 0 && !errorMessage) {
     <div class="empty-state">
       @if (!hasCalendars) {
-        <mat-icon>calendar_add_on</mat-icon>
-        <div>
-          <p>Nenhuma agenda cadastrada.</p>
-          <span>Crie uma agenda para começar a organizar e visualizar seus eventos.</span>
+        <div class="empty-state-content">
+          <mat-icon class="empty-icon">calendar_add_on</mat-icon>
+          <div class="empty-text">
+            <p>Nenhuma agenda cadastrada.</p>
+            <span>Crie uma agenda para começar a organizar e visualizar seus eventos.</span>
+          </div>
         </div>
-        <button mat-flat-button color="primary" routerLink="/gerenciar-agenda" [queryParams]="{ tab: 'visualizar' }">
+        <button mat-flat-button color="primary" class="btn-create-agenda" routerLink="/gerenciar-agenda" [queryParams]="{ tab: 'visualizar' }">
           <mat-icon>add</mat-icon>
           Criar primeira agenda
         </button>
