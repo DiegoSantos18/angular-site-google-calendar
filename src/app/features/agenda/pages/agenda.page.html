@@ -1,16 +1,18 @@
 <div class="agenda-container">
   <div class="agenda-header-actions">
     <div class="agenda-title-wrapper">
-      <h2>
+      <h2 class="agenda-title">
         <app-calendar-selector />
-        <span>Próximos Eventos</span>
-        <mat-icon
-          class="agenda-icon-title link"
-          title="Visualizar Agenda"
-          [routerLink]="['/gerenciar-agenda']"
-          [queryParams]="{ tab: 'visualizar' }">
-          read_more
-        </mat-icon>
+        <span class="title-content">
+          Próximos Eventos
+          <mat-icon
+            class="agenda-icon-title link"
+            title="Visualizar Agenda"
+            [routerLink]="['/gerenciar-agenda']"
+            [queryParams]="{ tab: 'visualizar' }">
+            read_more
+          </mat-icon>
+        </span>
       </h2>
     </div>
 
